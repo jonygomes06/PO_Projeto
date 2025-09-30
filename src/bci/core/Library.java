@@ -1,6 +1,7 @@
 package bci.core;
 
 import java.io.*;
+
 import bci.core.exception.UnrecognizedEntryException;
 // FIXME import classes
 
@@ -9,23 +10,25 @@ import bci.core.exception.UnrecognizedEntryException;
  */
 public class Library implements Serializable {
 
-  /** Serial number for serialization. */
-  @Serial
-  private static final long serialVersionUID = 202501101348L;
+    /**
+     * Serial number for serialization.
+     */
+    @Serial
+    private static final long serialVersionUID = 202501101348L;
 
-  // FIXME define attributes
-  // FIXME define contructor(s)
-  // FIXME define more methods
+    // FIXME define attributes
+    // FIXME define contructor(s)
+    // FIXME define more methods
 
-  /**
-   * Read text input file at the beginning of the program and populates the
-   * the state of this library with the domain entities represented in the text file.
-   * 
-   * @param filename name of the text input file to process
-   * @throws UnrecognizedEntryException if some entry is not correct
-   * @throws IOException if there is an IO erro while processing the text file
-   **/
-  void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */  {
-    //FIXME implement method
-  }
+    /**
+     * Read text input file at the beginning of the program and populates the
+     * the state of this library with the domain entities represented in the text file.
+     *
+     * @param filename name of the text input file to process
+     * @throws UnrecognizedEntryException if some entry is not correct
+     * @throws IOException                if there is an IO erro while processing the text file
+     **/
+    void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */ {
+        //FIXME implement method
+    }
 }

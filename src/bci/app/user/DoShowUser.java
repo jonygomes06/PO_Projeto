@@ -11,13 +11,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoShowUser extends Command<LibraryManager> {
 
-  DoShowUser(LibraryManager receiver) {
-    super(Label.SHOW_USER, receiver);
-    //FIXME add command fields
-  }
+    DoShowUser(LibraryManager receiver) {
+        super(Label.SHOW_USER, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }

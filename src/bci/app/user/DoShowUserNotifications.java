@@ -11,13 +11,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoShowUserNotifications extends Command<LibraryManager> {
 
-  DoShowUserNotifications(LibraryManager receiver) {
-    super(Label.SHOW_USER_NOTIFICATIONS, receiver);
-    //FIXME add command fields
-  }
+    DoShowUserNotifications(LibraryManager receiver) {
+        super(Label.SHOW_USER_NOTIFICATIONS, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }

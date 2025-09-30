@@ -11,13 +11,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoRegisterUser extends Command<LibraryManager> {
 
-  DoRegisterUser(LibraryManager receiver) {
-    super(Label.REGISTER_USER, receiver);
-    //FIXME add command fields
-  }
+    DoRegisterUser(LibraryManager receiver) {
+        super(Label.REGISTER_USER, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }

@@ -2,7 +2,9 @@ package bci.app.main;
 
 import bci.core.LibraryManager;
 
-/** Main menu. */
+/**
+ * Main menu.
+ */
 public class Menu extends pt.tecnico.uilib.menus.Menu {
 
     public Menu(LibraryManager receiver) {

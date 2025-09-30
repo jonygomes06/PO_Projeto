@@ -9,13 +9,13 @@ import pt.tecnico.uilib.menus.Command;
  */
 class DoDisplayDate extends Command<LibraryManager> {
 
-  DoDisplayDate(LibraryManager receiver) {
-    super(Label.DISPLAY_DATE, receiver);
-  }
+    DoDisplayDate(LibraryManager receiver) {
+        super(Label.DISPLAY_DATE, receiver);
+    }
 
-  @Override
-  protected final void execute() {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() {
+        //FIXME implement command
+    }
 
 }

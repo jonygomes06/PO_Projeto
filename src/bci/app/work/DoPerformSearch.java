@@ -9,14 +9,16 @@ import pt.tecnico.uilib.menus.Command;
  */
 class DoPerformSearch extends Command<LibraryManager> {
 
-  DoPerformSearch(LibraryManager receiver) {
-    super(Label.PERFORM_SEARCH, receiver);
-    //FIXME add command fields
-  }
+    DoPerformSearch(LibraryManager receiver) {
+        super(Label.PERFORM_SEARCH, receiver);
+        //FIXME add command fields
+    }
 
-  /** @see pt.tecnico.po.ui.Command#execute() */
-  @Override
-  protected final void execute() {
-    //FIXME implement command
-  }
+    /**
+     * @see pt.tecnico.po.ui.Command#execute()
+     */
+    @Override
+    protected final void execute() {
+        //FIXME implement command
+    }
 }

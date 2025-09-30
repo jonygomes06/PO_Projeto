@@ -7,14 +7,14 @@ import pt.tecnico.uilib.menus.CommandException;
  * lançar quando se tenta registar um utilizador com parâmetros inválidos.
  */
 public class UserRegistrationFailedException extends CommandException {
-  @java.io.Serial
-  private static final long serialVersionUID = 202507171003L;
+    @java.io.Serial
+    private static final long serialVersionUID = 202507171003L;
 
- /**
-   * @param name O nome do utilizador que deveria ter sido registado 
-   * @param email O email do utilizador que deveria ter sido registado 
-   */
-  public UserRegistrationFailedException(String name, String email) {
-    super(Message.userRegistrationFailed(name, email));
-  }
+    /**
+     * @param name  O nome do utilizador que deveria ter sido registado
+     * @param email O email do utilizador que deveria ter sido registado
+     */
+    public UserRegistrationFailedException(String name, String email) {
+        super(Message.userRegistrationFailed(name, email));
+    }
 }

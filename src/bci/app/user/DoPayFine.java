@@ -12,13 +12,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoPayFine extends Command<LibraryManager> {
 
-  DoPayFine(LibraryManager receiver) {
-    super(Label.PAY_FINE, receiver);
-    //FIXME add command fields
-  }
+    DoPayFine(LibraryManager receiver) {
+        super(Label.PAY_FINE, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }

@@ -9,13 +9,13 @@ import pt.tecnico.uilib.menus.Command;
  * Display all works by a specific creator.
  */
 class DoDisplayWorksByCreator extends Command<LibraryManager> {
-  DoDisplayWorksByCreator(LibraryManager receiver) {
-    super(Label.SHOW_WORKS_BY_CREATOR, receiver);
-    //FIXME add command fields
-  }
+    DoDisplayWorksByCreator(LibraryManager receiver) {
+        super(Label.SHOW_WORKS_BY_CREATOR, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws NoSuchCreatorException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws NoSuchCreatorException {
+        //FIXME implement command
+    }
 }

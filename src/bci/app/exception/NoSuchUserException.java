@@ -7,13 +7,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 public class NoSuchUserException extends CommandException {
 
-  @java.io.Serial
-  private static final long serialVersionUID = 202501091828L;
+    @java.io.Serial
+    private static final long serialVersionUID = 202501091828L;
 
-  /**
-   * @param id unknown user id
-   */
-  public NoSuchUserException(int id) {
-    super(Message.noSuchUser(id));
-  }
+    /**
+     * @param id unknown user id
+     */
+    public NoSuchUserException(int id) {
+        super(Message.noSuchUser(id));
+    }
 }

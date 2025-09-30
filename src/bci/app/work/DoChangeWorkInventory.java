@@ -10,13 +10,13 @@ import pt.tecnico.uilib.menus.CommandException;
  * Change the number of exemplars of a work.
  */
 class DoChangeWorkInventory extends Command<LibraryManager> {
-  DoChangeWorkInventory(LibraryManager receiver) {
-    super(Label.CHANGE_WORK_INVENTORY, receiver);
-     //FIXME add command fields
-  }
+    DoChangeWorkInventory(LibraryManager receiver) {
+        super(Label.CHANGE_WORK_INVENTORY, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }

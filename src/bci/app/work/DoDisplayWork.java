@@ -11,13 +11,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoDisplayWork extends Command<LibraryManager> {
 
-  DoDisplayWork(LibraryManager receiver) {
-    super(Label.SHOW_WORK, receiver);
-    //FIXME add command fields
-  }
+    DoDisplayWork(LibraryManager receiver) {
+        super(Label.SHOW_WORK, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-     //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }

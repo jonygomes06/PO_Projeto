@@ -9,12 +9,12 @@ import pt.tecnico.uilib.menus.Command;
  */
 class DoShowUsers extends Command<LibraryManager> {
 
-  DoShowUsers(LibraryManager receiver) {
-    super(Label.SHOW_USERS, receiver);
-  }
+    DoShowUsers(LibraryManager receiver) {
+        super(Label.SHOW_USERS, receiver);
+    }
 
-  @Override
-  protected final void execute() {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() {
+        //FIXME implement command
+    }
 }

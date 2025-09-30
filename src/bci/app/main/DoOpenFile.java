@@ -10,18 +10,19 @@ import pt.tecnico.uilib.menus.CommandException;
 
 class DoOpenFile extends Command<LibraryManager> {
 
-  DoOpenFile(LibraryManager receiver) {
-    super(Label.OPEN_FILE, receiver);
-  }
-
-  @Override
-  protected final void execute() throws CommandException {
-  /*
-    try {
-    //FIXME implement command
-    } catch (UnavailableFileException efe) {
-    throw new FileOpenFailedException(efe);
+    DoOpenFile(LibraryManager receiver) {
+        super(Label.OPEN_FILE, receiver);
     }
-  */
-  }
+
+    @Override
+    protected final void execute() throws CommandException {
+
+        /*
+        try {
+            //FIXME implement command
+        } catch (UnavailableFileException efe) {
+            throw new FileOpenFailedException(efe);
+        }
+        */
+    }
 }

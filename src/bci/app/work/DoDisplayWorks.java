@@ -9,12 +9,12 @@ import pt.tecnico.uilib.menus.Command;
  */
 class DoDisplayWorks extends Command<LibraryManager> {
 
-  DoDisplayWorks(LibraryManager receiver) {
-    super(Label.SHOW_WORKS, receiver);
-  }
+    DoDisplayWorks(LibraryManager receiver) {
+        super(Label.SHOW_WORKS, receiver);
+    }
 
-  @Override
-  protected final void execute() {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() {
+        //FIXME implement command
+    }
 }

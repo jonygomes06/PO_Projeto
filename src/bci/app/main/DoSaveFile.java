@@ -13,12 +13,12 @@ import java.io.IOException;
  */
 class DoSaveFile extends Command<LibraryManager> {
 
-  DoSaveFile(LibraryManager receiver) {
-    super(Label.SAVE_FILE, receiver);
-  }
+    DoSaveFile(LibraryManager receiver) {
+        super(Label.SAVE_FILE, receiver);
+    }
 
-  @Override
-  protected final void execute() {
-    // FIXME implement command and create a local Form
-  }
+    @Override
+    protected final void execute() {
+        // FIXME implement command and create a local Form
+    }
 }

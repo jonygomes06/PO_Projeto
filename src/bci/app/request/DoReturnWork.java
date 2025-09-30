@@ -14,13 +14,13 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoReturnWork extends Command<LibraryManager> {
 
-  DoReturnWork(LibraryManager receiver) {
-    super(Label.RETURN_WORK, receiver);
-    //FIXME add command fields
-  }
+    DoReturnWork(LibraryManager receiver) {
+        super(Label.RETURN_WORK, receiver);
+        //FIXME add command fields
+    }
 
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+    @Override
+    protected final void execute() throws CommandException {
+        //FIXME implement command
+    }
 }
