@@ -2,8 +2,8 @@ package bci.core;
 
 import java.io.*;
 
+import bci.core.date.Date;
 import bci.core.exception.UnrecognizedEntryException;
-// FIXME import classes
 
 /**
  * Class that represents the library as a whole.
@@ -16,9 +16,13 @@ public class Library implements Serializable {
     @Serial
     private static final long serialVersionUID = 202501101348L;
 
-    // FIXME define attributes
-    // FIXME define contructor(s)
-    // FIXME define more methods
+    private Date _currentDate;
+
+
+    public void advanceDate(int days) {
+        // FIXME implement method
+    }
+
 
     /**
      * Read text input file at the beginning of the program and populates the
@@ -30,5 +34,9 @@ public class Library implements Serializable {
      **/
     void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */ {
         //FIXME implement method
+    }
+
+    public Date getCurrentDate() {
+        return _currentDate;
     }
 }

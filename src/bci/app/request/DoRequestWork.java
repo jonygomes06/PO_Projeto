@@ -7,7 +7,6 @@ import bci.app.exception.BorrowingRuleFailedException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * 4.4.1. Request work.

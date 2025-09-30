@@ -4,25 +4,26 @@ import bci.core.exception.*;
 
 import java.io.*;
 
-// FIXME import classes
-
 /**
  * The façade class. Represents the manager of this application. It manages the current
  * library and works as the interface between the core and user interaction layers.
  */
 public class LibraryManager {
 
-
     /**
      * The object doing all the actual work.
      */
     /* The current library */
-    // FIXME: initialize this field
     private Library _library;
 
-    // FIXME: add more fields if needed
-    // FIXME: add constructor if needed
-    // FIXME: add more methods if needed
+    /**
+     * Constructor. Creates a new LibraryManager with an empty Library.
+     */
+    public LibraryManager() {
+        _library = new Library();
+    }
+
+    // FIXME redeclare methods to access the library's functionality
 
     /**
      * Saves the serialized application's state into the file associated to the current library

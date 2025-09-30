@@ -4,7 +4,6 @@ import bci.core.LibraryManager;
 import bci.app.exception.UserRegistrationFailedException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * 4.2.1. Register new user.

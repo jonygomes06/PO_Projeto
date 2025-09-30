@@ -7,7 +7,6 @@ import bci.app.exception.WorkNotBorrowedByUserException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * 4.4.2. Return a work.

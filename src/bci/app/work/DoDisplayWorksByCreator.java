@@ -3,7 +3,6 @@ package bci.app.work;
 import bci.core.LibraryManager;
 import bci.app.exception.NoSuchCreatorException;
 import pt.tecnico.uilib.menus.Command;
-//FIXME add more imports if needed
 
 /**
  * Display all works by a specific creator.

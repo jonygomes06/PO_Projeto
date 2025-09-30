@@ -2,7 +2,6 @@ package bci.app.main;
 
 import bci.core.LibraryManager;
 import pt.tecnico.uilib.menus.Command;
-//FIXME add more imports if needed
 
 /**
  * 4.1.2. Display the current date.
