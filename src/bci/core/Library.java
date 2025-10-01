@@ -21,16 +21,18 @@ public class Library implements Serializable {
     @Serial
     private static final long serialVersionUID = 202501101348L;
 
-    private Date _currentDate;
-    private Set<User> _users;
-    private Map<Integer, User> _usersById;
-    private Map<Integer, Work> _works;
+    private final Date _currentDate;
+    private final Set<User> _users;
+    private final Map<Integer, User> _usersById;
+    private final Map<Integer, Work> _works;
+    private final Map<String, Creator> _creators;
 
     public Library() {
         _currentDate = new Date();
         _users = new TreeSet<>();
         _usersById = new HashMap<>();
         _works = new LinkedHashMap<>();
+        _creators = new HashMap<>();
     }
 
     public Date getCurrentDate() {
