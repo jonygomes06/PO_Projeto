@@ -1,9 +1,12 @@
 package bci.core;
 
 import java.io.*;
+import java.util.*;
 
 import bci.core.date.Date;
 import bci.core.exception.UnrecognizedEntryException;
+import bci.core.user.User;
+import bci.core.work.Work;
 
 /**
  * Class that represents the library as a whole.
@@ -17,16 +20,60 @@ public class Library implements Serializable {
     private static final long serialVersionUID = 202501101348L;
 
     private Date _currentDate;
+    private Set<User> _users;
+    private HashMap<Integer, User> _usersById;
+    private Set<Work> _works;
 
+    public Library() {
+        _currentDate = new Date();
+        _users = new TreeSet<>();
+        _usersById = new HashMap<>();
+        _works = new LinkedHashSet<>();
+    }
+
+    public Date getCurrentDate() {
+        return _currentDate;
+    }
 
     public void advanceDate(int days) {
-        // FIXME implement method
+        if (days <= 0) return;
+        _currentDate.advanceDate(days);
+        updateUsersRequestsStates();
     }
+
+    public void updateUsersRequestsStates() {
+        //FIXME implement method
+    }
+
+    public User registerUser(String name, String email) {
+        User newUser = new User(name, email);
+        _users.add(newUser);
+        _usersById.put(newUser.getId(), newUser);
+
+        return newUser;
+    }
+
+    public User getUserById(int id) {
+        return _usersById.get(id);
+    }
+
+    public Set<User> getUsers() {
+        return Collections.unmodifiableSet(_users);
+    }
+
+    /*public Work getWorkById(int id) {
+        return id >= 0 && id < _works.size() ? _works.(id) : null;
+    }
+
+    public List<Work> getWorks() {
+        return Collections.un(_works);
+    }*/
+
 
 
     /**
      * Read text input file at the beginning of the program and populates the
-     * the state of this library with the domain entities represented in the text file.
+     * state of this library with the domain entities represented in the text file.
      *
      * @param filename name of the text input file to process
      * @throws UnrecognizedEntryException if some entry is not correct
@@ -34,9 +81,5 @@ public class Library implements Serializable {
      **/
     void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */ {
         //FIXME implement method
-    }
-
-    public Date getCurrentDate() {
-        return _currentDate;
     }
 }

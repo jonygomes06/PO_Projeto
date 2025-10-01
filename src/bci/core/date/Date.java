@@ -1,9 +1,15 @@
 package bci.core.date;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * A simple class to represent and manipulate a date as an integer value.
  */
-public class Date {
+public class Date implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 600671250616539002L;
+
     private int currentDate; // Stores the current date as an integer.
 
     /**
@@ -28,6 +34,7 @@ public class Date {
      * @param days the number of days to advance the date by.
      */
     public void advanceDate(int days) {
-        if (days > 0) currentDate += days;
+        if (days <= 0) return;
+        currentDate += days;
     }
 }
