@@ -38,10 +38,10 @@ public class Library implements Serializable {
     public void advanceDate(int days) {
         if (days <= 0) return;
         _currentDate.advanceDate(days);
-        updateUsersRequestsStates();
+        updateUsersStates();
     }
 
-    public void updateUsersRequestsStates() {
+    public void updateUsersStates() {
         //FIXME implement method
     }
 
@@ -68,7 +68,6 @@ public class Library implements Serializable {
     public Map<Integer, Work> getWorks() {
         return Collections.unmodifiableMap(_works);
     }
-
 
     /**
      * Read text input file at the beginning of the program and populates the

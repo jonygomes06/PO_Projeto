@@ -14,9 +14,9 @@ public class User implements Comparable<User>, Serializable {
 
     private static int _nextId = 0;
 
-    private int _id;
-    private String _name;
-    private String _email;
+    private final int _id;
+    private final String _name;
+    private final String _email;
     private boolean _isActive;
     private UserClassification _classification;
     private List<Notification> _notifications;
