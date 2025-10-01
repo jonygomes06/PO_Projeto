@@ -21,14 +21,14 @@ public class Library implements Serializable {
 
     private Date _currentDate;
     private Set<User> _users;
-    private HashMap<Integer, User> _usersById;
-    private Set<Work> _works;
+    private Map<Integer, User> _usersById;
+    private Map<Integer, Work> _works;
 
     public Library() {
         _currentDate = new Date();
         _users = new TreeSet<>();
         _usersById = new HashMap<>();
-        _works = new LinkedHashSet<>();
+        _works = new LinkedHashMap<>();
     }
 
     public Date getCurrentDate() {
@@ -61,14 +61,13 @@ public class Library implements Serializable {
         return Collections.unmodifiableSet(_users);
     }
 
-    /*public Work getWorkById(int id) {
-        return id >= 0 && id < _works.size() ? _works.(id) : null;
+    public Work getWorkById(int id) {
+        return _works.get(id);
     }
 
-    public List<Work> getWorks() {
-        return Collections.un(_works);
-    }*/
-
+    public Map<Integer, Work> getWorks() {
+        return Collections.unmodifiableMap(_works);
+    }
 
 
     /**
