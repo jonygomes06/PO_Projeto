@@ -19,6 +19,6 @@ public class Notification implements Serializable {
 
     @Override
     public String toString() {
-        return _type + ":" + _associatedWork.toString();
+        return String.format("%s:%s", _type.toString(), _associatedWork.toString());
     }
 }

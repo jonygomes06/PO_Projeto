@@ -10,7 +10,7 @@ import java.util.List;
 public class User implements Comparable<User>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 7847658452022990947L;
+    private static final long serialVersionUID = 7147658457022990947L;
 
     private static int _nextId = 0;
 
@@ -20,6 +20,7 @@ public class User implements Comparable<User>, Serializable {
     private boolean _isActive;
     private UserClassification _classification;
     private List<Notification> _notifications;
+    private int _totalFines;
 
     public User(String name, String email) {
         _id = _nextId++;
@@ -28,6 +29,7 @@ public class User implements Comparable<User>, Serializable {
         _isActive = true;
         _classification = UserClassification.NORMAL;
         _notifications = new ArrayList<>();
+        _totalFines = 0;
     }
 
     public int getId() {
@@ -53,5 +55,18 @@ public class User implements Comparable<User>, Serializable {
             return nameComparison;
         }
         return Integer.compare(_id, other.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User user && _id == user._id;
+    }
+
+    @Override
+    public String toString() {
+        if (_isActive)
+            return String.format("%d - %s - %s - %s - ACTIVO", _id, _name, _email, _classification);
+        else
+            return String.format("%d - %s - %s - %s - SUSPENSO - EUR %d", _id, _name, _email, _classification, _totalFines);
     }
 }

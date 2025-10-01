@@ -4,9 +4,11 @@ import java.io.*;
 import java.util.*;
 
 import bci.core.date.Date;
+import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.user.User;
 import bci.core.work.Work;
+import bci.core.work.WorkCategory;
 
 /**
  * Class that represents the library as a whole.
@@ -45,16 +47,28 @@ public class Library implements Serializable {
         //FIXME implement method
     }
 
-    public User registerUser(String name, String email) {
+    public void registerUser(String name, String email) {
         User newUser = new User(name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);
-
-        return newUser;
     }
 
-    public User getUserById(int id) {
-        return _usersById.get(id);
+    public void registerBook() {
+
+    }
+
+    public void registerDvd() {
+
+    }
+
+    public User getUserById(int id) throws NoSuchUserWithIdException {
+        User user = _usersById.get(id);
+
+        if (user == null) {
+            throw new NoSuchUserWithIdException(id);
+        }
+
+        return user;
     }
 
     public Set<User> getUsers() {

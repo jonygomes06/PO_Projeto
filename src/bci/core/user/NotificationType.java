@@ -1,8 +1,17 @@
 package bci.core.user;
 
-import java.io.Serializable;
-
 public enum NotificationType {
-    DISPONIBILIDADE,
-    REQUISICAO
+    DISPONIBILIDADE("DISPONIBILIDADE"),
+    REQUISICAO("REQUISIÇÃO");
+
+    private final String _label;
+
+    NotificationType(String label) {
+        _label = label;
+    }
+
+    @Override
+    public String toString() {
+        return _label;
+    }
 }
