@@ -1,5 +1,6 @@
 package bci.core;
 
+import bci.core.exception.InvalidRegistrationEntryException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.work.WorkCategory;
 
@@ -52,8 +53,8 @@ public class ImportFileParser {
                 throw new UnrecognizedEntryException ("Número inválido de campos (3) na descrição de um utente: " + line);
 
             _library.registerUser(components[1], components[2]);
-        } catch (SomeException e) {
-            throw UnrecognizedEntryException (...);
+        } catch (InvalidRegistrationEntryException e) {
+            throw new UnrecognizedEntryException(e.getEntrySpecification());
         }
     }
 

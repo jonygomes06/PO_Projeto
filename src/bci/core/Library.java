@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import bci.core.date.Date;
+import bci.core.exception.InvalidRegistrationEntryException;
 import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.user.User;
@@ -49,7 +50,11 @@ public class Library implements Serializable {
         //FIXME implement method
     }
 
-    public void registerUser(String name, String email) {
+    public void registerUser(String name, String email) throws InvalidRegistrationEntryException {
+        if (name == null || name.isBlank() || email == null || email.isBlank()) {
+            throw new InvalidRegistrationEntryException("Name and email must be non-empty.");
+        }
+
         User newUser = new User(name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);

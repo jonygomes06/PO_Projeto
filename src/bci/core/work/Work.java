@@ -37,7 +37,7 @@ public abstract class Work implements Serializable {
     }
 
     protected String getGeneralDescription() {
-        return String.format("%d - %d de %d - %s - %s - %d - %s",
+        return String.format(" %d - %d de %d - %s - %s - %d - %s",
                 _id, _availableCopies, _totalCopies, _type.toString(), _title, _price, _category.toString());
     }
 
