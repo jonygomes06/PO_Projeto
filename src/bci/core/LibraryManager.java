@@ -73,7 +73,7 @@ public class LibraryManager {
         try {
             if (datafile != null && !datafile.isEmpty())
                 _library.importFile(datafile);
-        } catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
+        } catch (IOException | UnrecognizedEntryException e) {
             throw new ImportFileException(datafile, e);
         }
     }
