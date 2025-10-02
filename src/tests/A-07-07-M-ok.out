@@ -1,0 +1,22 @@
+Menu Principal
+1 - Abrir ficheiro
+2 - Guardar ficheiro
+3 - Ver data
+4 - Avançar data
+5 - Menu de gestão de utentes
+6 - Menu de gestão de obras
+7 - Menu de gestão de requisições
+0 - Sair
+Escolha uma opção: 1
+Ficheiro a abrir: naoExistente
+Abrir ficheiro: Operação inválida: Problema ao abrir ficheiro: Erro a processar ficheiro naoExistente
+Menu Principal
+1 - Abrir ficheiro
+2 - Guardar ficheiro
+3 - Ver data
+4 - Avançar data
+5 - Menu de gestão de utentes
+6 - Menu de gestão de obras
+7 - Menu de gestão de requisições
+0 - Sair
+Escolha uma opção: 0
