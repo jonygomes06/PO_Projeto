@@ -4,9 +4,12 @@ import java.io.*;
 import java.util.*;
 
 import bci.core.date.Date;
+import bci.core.exception.InvalidRegistrationEntryException;
+import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.user.User;
 import bci.core.work.Work;
+import bci.core.work.WorkCategory;
 
 /**
  * Class that represents the library as a whole.
@@ -19,16 +22,18 @@ public class Library implements Serializable {
     @Serial
     private static final long serialVersionUID = 202501101348L;
 
-    private Date _currentDate;
-    private Set<User> _users;
-    private Map<Integer, User> _usersById;
-    private Map<Integer, Work> _works;
+    private final Date _currentDate;
+    private final Set<User> _users;
+    private final Map<Integer, User> _usersById;
+    private final Map<Integer, Work> _works;
+    private final Map<String, Creator> _creators;
 
     public Library() {
         _currentDate = new Date();
         _users = new TreeSet<>();
         _usersById = new HashMap<>();
         _works = new LinkedHashMap<>();
+        _creators = new HashMap<>();
     }
 
     public Date getCurrentDate() {
@@ -45,16 +50,32 @@ public class Library implements Serializable {
         //FIXME implement method
     }
 
-    public User registerUser(String name, String email) {
+    public void registerUser(String name, String email) throws InvalidRegistrationEntryException {
+        if (name == null || name.isBlank() || email == null || email.isBlank()) {
+            throw new InvalidRegistrationEntryException("Name and email must be non-empty.");
+        }
+
         User newUser = new User(name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);
-
-        return newUser;
     }
 
-    public User getUserById(int id) {
-        return _usersById.get(id);
+    public void registerBook() {
+
+    }
+
+    public void registerDvd() {
+
+    }
+
+    public User getUserById(int id) throws NoSuchUserWithIdException {
+        User user = _usersById.get(id);
+
+        if (user == null) {
+            throw new NoSuchUserWithIdException(id);
+        }
+
+        return user;
     }
 
     public Set<User> getUsers() {
