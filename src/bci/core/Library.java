@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import bci.core.date.Date;
-import bci.core.exception.InvalidRegistrationEntryException;
+import bci.core.exception.InvalidArgumentsException;
 import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.user.User;
@@ -50,9 +50,9 @@ public class Library implements Serializable {
         //FIXME implement method
     }
 
-    public void registerUser(String name, String email) throws InvalidRegistrationEntryException {
+    public void registerUser(String name, String email) throws InvalidArgumentsException {
         if (name == null || name.isBlank() || email == null || email.isBlank()) {
-            throw new InvalidRegistrationEntryException("Name and email must be non-empty.");
+            throw new InvalidArgumentsException("Name and email must be non-empty.");
         }
 
         User newUser = new User(name, email);
@@ -66,6 +66,14 @@ public class Library implements Serializable {
 
     public void registerDvd() {
 
+    }
+
+    public Creator registerCreator(String name) throws IllegalArgumentException {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Creator name must be non-empty.");
+        }
+
+        return _creators.computeIfAbsent(name, Creator::new);
     }
 
     public User getUserById(int id) throws NoSuchUserWithIdException {

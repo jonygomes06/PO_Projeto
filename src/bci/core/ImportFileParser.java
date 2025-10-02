@@ -1,6 +1,6 @@
 package bci.core;
 
-import bci.core.exception.InvalidRegistrationEntryException;
+import bci.core.exception.InvalidArgumentsException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.work.WorkCategory;
 
@@ -53,9 +53,24 @@ public class ImportFileParser {
                 throw new UnrecognizedEntryException ("Número inválido de campos (3) na descrição de um utente: " + line);
 
             _library.registerUser(components[1], components[2]);
-        } catch (InvalidRegistrationEntryException e) {
-            throw new UnrecognizedEntryException(e.getEntrySpecification());
+        } catch (InvalidArgumentsException e) {
+            throw new UnrecognizedEntryException(e.getArgSpecification());
         }
+    }
+
+    private void parseBook(String[] components, String line) throws UnrecognizedEntryException {
+        if (components.length != 7)
+            throw new UnrecognizedEntryException ("Número inválido de campos (7) na descrição de um Book: " + line);
+
+        int price = Integer.parseInt(components[3]);
+        int nCopies = Integer.parseInt(components[6]);
+        WorkCategory category = WorkCategory.valueOf(components[4]);
+        List<Creator> creators = new ArrayList<>();
+        for (String name : components[2].split("; ")) {
+            creators.add(_library.registerCreator(name.trim()));
+        }
+
+        _library.registerBook(); // FIXME
     }
 
     private void parseDvd(String[] components, String line) throws UnrecognizedEntryException {
@@ -68,19 +83,5 @@ public class ImportFileParser {
         Creator creator = _library.registerCreator(components[2].trim());
 
         _library.registerDvd(); // FIXME
-    }
-
-    private void parseBook(String[] components, String line) throws UnrecognizedEntryException {
-        if (components.length != 7)
-            throw new UnrecognizedEntryException ("Número inválido de campos (7) na descrição de um Book: " + line);
-
-        int price = Integer.parseInt(components[3]);
-        int nCopies = Integer.parseInt(components[6]);
-        WorkCategory category = WorkCategory.valueOf(components[4]);
-        List<Creator> creators = new ArrayList<>();
-        for (String name : components[2].split("; "))
-            creators.add(_library.registerCreator(name.trim()));
-
-        _library.registerBook(); // FIXME
     }
 }

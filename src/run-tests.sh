@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 
 # ==============================
-#  Configuration
+# Configuration
 # ==============================
 JAR="po-uilib.jar"
 MAIN_CLASS="bci.app.App"
+SRC_DIR="."        # Root of Java sources
+BIN_DIR="."        # Where .class files will go
 TEST_DIR="tests"
-SRC_DIR="."   # Root directory for Java sources
-CLASS_DIR="." # Output directory for compiled classes
 
-# ==============================
-#  Colors and Formatting
-# ==============================
+# CLI argument: show diffs if present
+SHOW_DIFFS=false
+if [[ "$1" == "--show-diffs" ]]; then
+    SHOW_DIFFS=true
+fi
+
+# Colors
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
@@ -20,10 +24,10 @@ BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
 # ==============================
-#  Compile if needed
+# Compile Java Sources
 # ==============================
 echo "${CYAN}${BOLD}→ Compiling Java sources...${RESET}"
-find "$SRC_DIR" -name "*.java" | xargs javac -cp "$JAR:." -d "$CLASS_DIR"
+find "$SRC_DIR" -name "*.java" | xargs javac -cp "$JAR:." -d "$BIN_DIR"
 if [ $? -ne 0 ]; then
     echo "${RED}✗ Compilation failed. Fix errors and rerun.${RESET}"
     exit 1
@@ -32,7 +36,7 @@ echo "${GREEN}✓ Compilation successful.${RESET}"
 echo
 
 # ==============================
-#  Run Tests
+# Run Tests
 # ==============================
 total=0
 passed=0
@@ -56,19 +60,25 @@ for input_file in "$TEST_DIR"/*.in; do
         java -cp "$JAR:." -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
     fi
 
-    # Check if output was generated
+    # Check output exists
     if [ ! -f "$output_file" ]; then
-        echo -e "${YELLOW}⚠ Test $test_name: Program did not produce output.${RESET}"
+        echo -e "${YELLOW}⚠ $test_name: No output produced.${RESET}"
         failed_tests+=("$test_name (no output)")
         ((total++))
         continue
     fi
 
-    # Compare with expected output
-    diff -cwB "$expected_file" "$output_file" > "$diff_file"
-    if [ -s "$diff_file" ]; then
+    # Compare outputs
+    if ! diff -u "$expected_file" "$output_file" > "$diff_file"; then
         echo -e "${RED}✗ $test_name${RESET}"
         failed_tests+=("$test_name")
+        if [ "$SHOW_DIFFS" = true ]; then
+            echo "${YELLOW}--- Diff snippet ---${RESET}"
+            head -n 15 "$diff_file" | sed \
+                -e "s/^+/$(tput setaf 2)+/; s/^-/$(tput setaf 1)-/" \
+                -e "s/^/    /"
+            echo "${YELLOW}--------------------${RESET}"
+        fi
     else
         echo -e "${GREEN}✓ $test_name${RESET}"
         ((passed++))
@@ -78,11 +88,11 @@ for input_file in "$TEST_DIR"/*.in; do
     ((total++))
 done
 
-# Cleanup leftover files
+# Cleanup saved files
 rm -f saved* 2>/dev/null
 
 # ==============================
-#  Summary
+# Summary
 # ==============================
 echo
 echo "${BOLD}==============================${RESET}"
@@ -90,22 +100,13 @@ echo "${BOLD}📊 TEST SUMMARY${RESET}"
 echo "Total tests : $total"
 echo "Passed      : ${GREEN}$passed${RESET}"
 echo "Failed      : ${RED}$((total - passed))${RESET}"
-if [ $total -gt 0 ]; then
-    pct=$(( 100 * passed / total ))
-else
-    pct=0
-fi
+pct=$(( total > 0 ? 100 * passed / total : 0 ))
 echo "Success     : ${BOLD}$pct%${RESET}"
 echo "=============================="
 
-if [ ${#failed_tests[@]} -gt 0 ]; then
-    echo
-    echo "${RED}${BOLD}Failed tests:${RESET}"
-    for t in "${failed_tests[@]}"; do
-        echo "  - $t"
-    done
-    echo
-    echo "Check the corresponding .diff files for details."
-fi
-
-echo "${CYAN}${BOLD}Done.${RESET}"
+# ==============================
+# Cleanup .class files
+# ==============================
+echo "${CYAN}${BOLD}→ Cleaning up .class files...${RESET}"
+find "$BIN_DIR" -name "*.class" -delete
+echo "${GREEN}✓ All .class files removed.${RESET}"

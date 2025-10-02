@@ -5,7 +5,7 @@ SRC_DIR := .
 BIN_DIR := .
 MAIN_CLASS := bci.app.App
 JAR := po-uilib.jar
-TEST_DIR := testsBoth
+TEST_DIR := tests
 TEST_SCRIPT := run-tests.sh
 
 # Find all .java files and map to .class files
