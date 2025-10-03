@@ -6,7 +6,7 @@ $JAR = "po-uilib.jar"
 $MAIN_CLASS = "bci.app.App"
 $SRC_DIR = "."
 $BIN_DIR = "."
-$TEST_DIR = "tests"
+$TEST_DIR = "D:\01\IST\Cadeiras\Programação com Objetos\PO_Projeto\src\tests"
 
 # CLI argument: show diffs if present
 $SHOW_DIFFS = $false
@@ -33,18 +33,34 @@ function Diff-Files($expected, $actual, $maxLines = 15, $showDiffs = $false) {
     $differences = Compare-Object -ReferenceObject $expectedLines -DifferenceObject $actualLines
 
     if ($differences.Count -gt 0) {
+        $diffPath = [System.IO.Path]::ChangeExtension($expected, ".diff")
+        $diffContent = @()
+
+        $differences | ForEach-Object {
+            if ($_.SideIndicator -eq "=>") {
+                $diffContent += "+ $($_.InputObject)"
+            } elseif ($_.SideIndicator -eq "<=") {
+                $diffContent += "- $($_.InputObject)"
+            }
+        }
+
+        [System.IO.File]::WriteAllLines($diffPath, $diffContent, [System.Text.Encoding]::UTF8)
+
         if ($showDiffs) {
-            $differences | Select-Object -First $maxLines | ForEach-Object {
-                if ($_.SideIndicator -eq "=>") {
-                    Write-Host "    + $($_.InputObject)" -ForegroundColor Green
-                } elseif ($_.SideIndicator -eq "<=") {
-                    Write-Host "    - $($_.InputObject)" -ForegroundColor Red
+            $diffContent | Select-Object -First $maxLines | ForEach-Object {
+                if ($_ -like "+ *") {
+                    Write-Host "    $_" -ForegroundColor Green
+                } elseif ($_ -like "- *") {
+                    Write-Host "    $_" -ForegroundColor Red
                 } else {
                     Write-Host "    $_" -ForegroundColor Gray
                 }
             }
         }
         return $false
+    } else {
+        $oldDiff = [System.IO.Path]::ChangeExtension($expected, ".diff")
+        if (Test-Path $oldDiff) { Remove-Item $oldDiff -Force }
     }
     return $true
 }
