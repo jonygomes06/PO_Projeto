@@ -1,16 +1,15 @@
 # ==============================
 # Configuration
 # ==============================
-SRC_DIR := .
-BIN_DIR := .
+SRC_DIR := src
+BIN_DIR := bin
 MAIN_CLASS := bci.app.App
 JAR := po-uilib.jar
 TEST_DIR := tests
 TEST_SCRIPT := run-tests.sh
 
-# Find all .java files and map to .class files
+# Find all .java sources
 SOURCES := $(shell find $(SRC_DIR) -name "*.java")
-CLASSES := $(SOURCES:.java=.class)
 
 # ==============================
 # Default Target
@@ -19,19 +18,19 @@ CLASSES := $(SOURCES:.java=.class)
 all: compile
 
 # ==============================
-# Compilation
+# Compilation (optimized)
 # ==============================
 .PHONY: compile
-compile: $(CLASSES)
-	@echo "✅ Compilation finished."
+compile: $(BIN_DIR)/.compiled
 
-%.class: %.java
-	@javac -cp $(JAR):$(SRC_DIR) -d $(BIN_DIR) $<
-	@echo "Compiled $<"
+$(BIN_DIR)/.compiled: $(SOURCES)
+	@mkdir -p $(BIN_DIR)
+	@javac -cp $(JAR):$(BIN_DIR) -d $(BIN_DIR) $(SOURCES)
+	@touch $@
+	@echo "✅ Compilation finished."
 
 # ==============================
 # Run Main Program
-# Usage: make run ARGS="..."
 # ==============================
 .PHONY: run
 run: compile
@@ -51,8 +50,6 @@ test: compile
 .PHONY: clean
 clean:
 	@echo "🧹 Cleaning up..."
-	@find $(BIN_DIR) -name "*.class" -delete
-	@find $(TEST_DIR) -name "*.outhyp" -delete
-	@find $(TEST_DIR) -name "*.diff" -delete
-	@rm -f saved*
+	@rm -rf $(BIN_DIR)
+	@rm -f $(TEST_DIR)/*.{outhyp,diff} saved*
 	@echo "✅ Clean complete."

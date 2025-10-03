@@ -5,8 +5,8 @@
 # ==============================
 JAR="po-uilib.jar"
 MAIN_CLASS="bci.app.App"
-SRC_DIR="."        # Root of Java sources
-BIN_DIR="."        # Where .class files will go
+SRC_DIR="src"       # Root of Java sources
+BIN_DIR="bin"       # Where .class files will go
 TEST_DIR="tests"
 
 # CLI argument: show diffs if present
@@ -24,10 +24,15 @@ BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
 # ==============================
+# Prepare bin directory
+# ==============================
+mkdir -p "$BIN_DIR"
+
+# ==============================
 # Compile Java Sources
 # ==============================
 echo "${CYAN}${BOLD}→ Compiling Java sources...${RESET}"
-find "$SRC_DIR" -name "*.java" | xargs javac -cp "$JAR:." -d "$BIN_DIR"
+find "$SRC_DIR" -name "*.java" | xargs javac -cp "$JAR:$BIN_DIR" -d "$BIN_DIR"
 if [ $? -ne 0 ]; then
     echo "${RED}✗ Compilation failed. Fix errors and rerun.${RESET}"
     exit 1
@@ -55,9 +60,9 @@ for input_file in "$TEST_DIR"/*.in; do
 
     # Run program
     if [ -e "$import_file" ]; then
-        java -cp "$JAR:." -Dimport="$import_file" -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
+        java -cp "$JAR:$BIN_DIR" -Dimport="$import_file" -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
     else
-        java -cp "$JAR:." -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
+        java -cp "$JAR:$BIN_DIR" -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
     fi
 
     # Check output exists
@@ -103,10 +108,3 @@ echo "Failed      : ${RED}$((total - passed))${RESET}"
 pct=$(( total > 0 ? 100 * passed / total : 0 ))
 echo "Success     : ${BOLD}$pct%${RESET}"
 echo "=============================="
-
-# ==============================
-# Cleanup .class files
-# ==============================
-echo "${CYAN}${BOLD}→ Cleaning up .class files...${RESET}"
-find "$BIN_DIR" -name "*.class" -delete
-echo "${GREEN}✓ All .class files removed.${RESET}"

@@ -12,8 +12,8 @@ param(
 # ==============================
 # Configuration
 # ==============================
-$SRC_DIR = "."
-$BIN_DIR = ".\bin"
+$SRC_DIR = "src"
+$BIN_DIR = "bin"
 $MAIN_CLASS = "bci.app.App"
 $JAR = "po-uilib.jar"
 $TEST_DIR = "tests"
@@ -47,7 +47,12 @@ if ($Compile) {
     # Determine which files need compilation
     $filesToCompile = @()
     foreach ($file in $javaFiles) {
-        $classFile = Join-Path $BIN_DIR ([IO.Path]::ChangeExtension((Split-Path $file -Leaf), ".class"))
+        # Map package path to correct .class file in bin/
+        $relativePath = Resolve-Path $file | ForEach-Object {
+            $_.Path.Substring((Resolve-Path $SRC_DIR).Path.Length).TrimStart('\','/')
+        }
+        $classFile = Join-Path $BIN_DIR ([IO.Path]::ChangeExtension($relativePath, ".class"))
+
         if (-not (Test-Path $classFile) -or (Get-Item $file).LastWriteTime -gt (Get-Item $classFile).LastWriteTime) {
             $filesToCompile += $file
         }
@@ -94,8 +99,10 @@ if ($Test) {
 # ==============================
 if ($Clean) {
     Say "→ Cleaning build artifacts..." "Cyan"
-    # Remove all .class files
-    Get-ChildItem -Path $BIN_DIR -Recurse -Filter *.class -ErrorAction SilentlyContinue | Remove-Item -Force
+    # Remove bin directory entirely
+    if (Test-Path $BIN_DIR) {
+        Remove-Item -Recurse -Force $BIN_DIR
+    }
     # Remove test outputs and diffs
     Get-ChildItem -Path $TEST_DIR -Recurse -Filter *.outhyp -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem -Path $TEST_DIR -Recurse -Filter *.diff -ErrorAction SilentlyContinue | Remove-Item -Force
