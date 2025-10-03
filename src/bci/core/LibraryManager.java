@@ -23,7 +23,9 @@ public class LibraryManager {
         _library = new Library();
     }
 
-    // FIXME redeclare methods to access the library's functionality
+    public Library getLibrary() {
+        return _library;
+    }
 
     /**
      * Saves the serialized application's state into the file associated to the current library

@@ -9,7 +9,7 @@ public abstract class Work implements Serializable {
     @Serial
     private static final long serialVersionUID = -7478614181433606768L;
 
-    private static int _nextId = 0;
+    private static int _nextId = 1;
 
     private final int _id;
     private final String _title;
@@ -38,7 +38,7 @@ public abstract class Work implements Serializable {
     }
 
     protected String getGeneralDescription() {
-        return String.format(" %d - %d de %d - %s - %s - %d - %s",
+        return String.format("%d - %d de %d - %s - %s - %d - %s",
                 _id, _availableCopies, _totalCopies, _type.toString(), _title, _price, _category.toString());
     }
 

@@ -1,6 +1,7 @@
 package bci.app.main;
 
 import bci.core.LibraryManager;
+import bci.core.date.Date;
 import pt.tecnico.uilib.menus.Command;
 
 /**
@@ -14,7 +15,7 @@ class DoDisplayDate extends Command<LibraryManager> {
 
     @Override
     protected final void execute() {
-        //FIXME implement command
+        Date currentDate = _receiver.getLibrary().getCurrentDate();
+        _display.popup(Message.currentDate(currentDate.getCurrentDate()));
     }
-
 }

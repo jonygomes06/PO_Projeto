@@ -12,7 +12,7 @@ public class User implements Comparable<User>, Serializable {
     @Serial
     private static final long serialVersionUID = 7147658457022990947L;
 
-    private static int _nextId = 0;
+    private static int _nextId = 1;
 
     private final int _id;
     private final String _name;

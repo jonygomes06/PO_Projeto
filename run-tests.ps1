@@ -9,12 +9,11 @@ $JAR         = "po-uilib.jar"
 $MAIN_CLASS  = "bci.app.App"
 $SRC_DIR     = "src"
 $BIN_DIR     = "bin"
-$TEST_DIR    = "tests"
+$TEST_DIR    = ".\tests"
 $SHOW_DIFFS  = ($args -contains "--show-diffs")
 
 # Platform-aware classpath
-$CPSEP       = [System.IO.Path]::PathSeparator
-$CLASSPATH   = "$JAR$CPSEP$BIN_DIR"
+$CLASSPATH   = "$BIN_DIR"
 
 # ==============================
 # Output helpers
@@ -72,7 +71,7 @@ if (-not $javaFiles) {
     exit 1
 }
 
-& javac -cp $CLASSPATH -d $BIN_DIR $javaFiles *> $null
+& javac -d $BIN_DIR $javaFiles *> $null
 if ($LASTEXITCODE -ne 0) {
     Write-Err "Compilation failed. Fix errors and rerun."
     exit 1
@@ -93,16 +92,16 @@ $failedTests = @()
 
 Get-ChildItem -Path $TEST_DIR -Filter '*.in' -File -ErrorAction SilentlyContinue | ForEach-Object {
     $baseName     = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
-    $inputFile    = $_.FullName
+    $inputFile    = Join-Path $TEST_DIR "$baseName.in"
     $importFile   = Join-Path $TEST_DIR "$baseName.import"
     $expectedFile = Join-Path $TEST_DIR "$baseName.out"
     $outputFile   = Join-Path $TEST_DIR "$baseName.outhyp"
     $diffFile     = Join-Path $TEST_DIR "$baseName.diff"
 
     # Run program
-    $javaArgs = @("-cp", $CLASSPATH, "-Din=$inputFile", "-DwriteInput=true", "-Dout=$outputFile")
-    if (Test-Path $importFile) { $javaArgs += "-Dimport=$importFile" }
-    & java @javaArgs $MAIN_CLASS *> $null
+    $javaArgs = @("-cp", "`"$CLASSPATH`"", "-Din=`"$inputFile`"", "-DwriteInput=true", "-Dout=`"$outputFile`"")
+    if (Test-Path $importFile) { $javaArgs += "-Dimport=`"$importFile`"" }
+    & java @javaArgs $MAIN_CLASS
 
     $total++
 

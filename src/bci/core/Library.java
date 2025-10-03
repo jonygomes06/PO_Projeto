@@ -6,6 +6,7 @@ import java.util.*;
 import bci.core.date.Date;
 import bci.core.exception.InvalidArgumentsException;
 import bci.core.exception.NoSuchUserWithIdException;
+import bci.core.exception.NoSuchWorkWithIdException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.user.User;
 import bci.core.work.Book;
@@ -47,7 +48,7 @@ public class Library implements Serializable {
 //        updateUsersStates(); FIXME so para a entrega final
     }
 
-    public void registerUser(String name, String email) throws InvalidArgumentsException {
+    public User registerUser(String name, String email) throws InvalidArgumentsException {
         if (name == null || name.isBlank() || email == null || email.isBlank()) {
             throw new InvalidArgumentsException("Name and email must be non-empty.");
         }
@@ -55,6 +56,7 @@ public class Library implements Serializable {
         User newUser = new User(name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);
+        return newUser;
     }
 
     public User getUserById(int id) throws NoSuchUserWithIdException {
@@ -71,8 +73,14 @@ public class Library implements Serializable {
         return Collections.unmodifiableSet(_users);
     }
 
-    public Work getWorkById(int id) {
-        return _works.get(id);
+    public Work getWorkById(int id) throws NoSuchWorkWithIdException {
+        Work work = _works.get(id);
+
+        if (work == null) {
+            throw new NoSuchWorkWithIdException(id);
+        }
+
+        return work;
     }
 
     public Map<Integer, Work> getWorks() {

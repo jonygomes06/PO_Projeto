@@ -1,6 +1,8 @@
 package bci.app.work;
 
 import bci.core.LibraryManager;
+import bci.core.user.User;
+import bci.core.work.Work;
 import pt.tecnico.uilib.menus.Command;
 
 /**
@@ -14,6 +16,11 @@ class DoDisplayWorks extends Command<LibraryManager> {
 
     @Override
     protected final void execute() {
-        //FIXME implement command
+        _display.popup(_receiver.getLibrary()
+                                .getWorks()
+                                .values()
+                                .stream()
+                                .map(Work::toString)
+                                .toList());
     }
 }
