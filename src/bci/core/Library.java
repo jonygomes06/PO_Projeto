@@ -4,10 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import bci.core.date.Date;
-import bci.core.exception.InvalidArgumentsException;
-import bci.core.exception.NoSuchUserWithIdException;
-import bci.core.exception.NoSuchWorkWithIdException;
-import bci.core.exception.UnrecognizedEntryException;
+import bci.core.exception.*;
 import bci.core.user.User;
 import bci.core.work.Book;
 import bci.core.work.Dvd;
@@ -85,6 +82,16 @@ public class Library implements Serializable {
 
     public Map<Integer, Work> getWorks() {
         return Collections.unmodifiableMap(_works);
+    }
+
+    public Creator getCreatorByName(String name) throws NoSuchCreatorWithIdException {
+        Creator creator = _creators.get(name);
+
+        if (creator == null) {
+            throw new NoSuchCreatorWithIdException(name);
+        }
+
+        return creator;
     }
 
     Book registerBook(Book.Builder bookBuilder) {
