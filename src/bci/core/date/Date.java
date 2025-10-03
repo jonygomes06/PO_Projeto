@@ -10,7 +10,7 @@ public class Date implements Serializable {
     private int currentDate;
 
     public Date() {
-        this.currentDate = 0;
+        this.currentDate = 1;
     }
 
     public int getCurrentDate() {
