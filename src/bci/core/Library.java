@@ -8,8 +8,9 @@ import bci.core.exception.InvalidArgumentsException;
 import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.UnrecognizedEntryException;
 import bci.core.user.User;
+import bci.core.work.Book;
+import bci.core.work.Dvd;
 import bci.core.work.Work;
-import bci.core.work.WorkCategory;
 
 /**
  * Class that represents the library as a whole.
@@ -28,7 +29,7 @@ public class Library implements Serializable {
     private final Map<Integer, Work> _works;
     private final Map<String, Creator> _creators;
 
-    public Library() {
+    Library() {
         _currentDate = new Date();
         _users = new TreeSet<>();
         _usersById = new HashMap<>();
@@ -43,11 +44,7 @@ public class Library implements Serializable {
     public void advanceDate(int days) {
         if (days <= 0) return;
         _currentDate.advanceDate(days);
-        updateUsersStates();
-    }
-
-    public void updateUsersStates() {
-        //FIXME implement method
+//        updateUsersStates(); FIXME so para a entrega final
     }
 
     public void registerUser(String name, String email) throws InvalidArgumentsException {
@@ -58,22 +55,6 @@ public class Library implements Serializable {
         User newUser = new User(name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);
-    }
-
-    public void registerBook() {
-
-    }
-
-    public void registerDvd() {
-
-    }
-
-    public Creator registerCreator(String name) throws IllegalArgumentException {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Creator name must be non-empty.");
-        }
-
-        return _creators.computeIfAbsent(name, Creator::new);
     }
 
     public User getUserById(int id) throws NoSuchUserWithIdException {
@@ -98,6 +79,26 @@ public class Library implements Serializable {
         return Collections.unmodifiableMap(_works);
     }
 
+    Book registerBook(Book.Builder bookBuilder) {
+        Book newBook = bookBuilder.build();
+        _works.put(newBook.getId(), newBook);
+        return newBook;
+    }
+
+    Dvd registerDvd(Dvd.Builder dvdBuilder) {
+        Dvd newDvd = dvdBuilder.build();
+        _works.put(newDvd.getId(), newDvd);
+        return newDvd;
+    }
+
+    Creator registerCreator(String name) throws InvalidArgumentsException {
+        if (name == null || name.isBlank()) {
+            throw new InvalidArgumentsException("Creator name must be non-empty.");
+        }
+
+        return _creators.computeIfAbsent(name, Creator::new);
+    }
+
     /**
      * Read text input file at the beginning of the program and populates the
      * state of this library with the domain entities represented in the text file.
@@ -106,7 +107,8 @@ public class Library implements Serializable {
      * @throws UnrecognizedEntryException if some entry is not correct
      * @throws IOException                if there is an IO erro while processing the text file
      **/
-    void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */ {
-        //FIXME implement method
+    void importFile(String filename) throws UnrecognizedEntryException, IOException {
+        ImportFileParser parser = new ImportFileParser(this);
+        parser.parseFile(filename);
     }
 }

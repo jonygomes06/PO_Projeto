@@ -2,6 +2,8 @@ package bci.core;
 
 import bci.core.exception.InvalidArgumentsException;
 import bci.core.exception.UnrecognizedEntryException;
+import bci.core.work.Book;
+import bci.core.work.Dvd;
 import bci.core.work.WorkCategory;
 
 import java.io.BufferedReader;
@@ -20,7 +22,7 @@ public class ImportFileParser {
     void parseFile(String filename) throws UnrecognizedEntryException, IOException {
         String line;
 
-        try (BufferedReader in = new BufferedReader(new FileReader(filename));) {
+        try (BufferedReader in = new BufferedReader(new FileReader(filename))) {
             while ((line = in.readLine()) != null)
                 parseLine(line);
         }
@@ -62,26 +64,48 @@ public class ImportFileParser {
         if (components.length != 7)
             throw new UnrecognizedEntryException ("Número inválido de campos (7) na descrição de um Book: " + line);
 
-        int price = Integer.parseInt(components[3]);
-        int nCopies = Integer.parseInt(components[6]);
-        WorkCategory category = WorkCategory.valueOf(components[4]);
-        List<Creator> creators = new ArrayList<>();
-        for (String name : components[2].split("; ")) {
-            creators.add(_library.registerCreator(name.trim()));
-        }
+        try {
+            List<Creator> authors = new ArrayList<>();
+            for (String name : components[2].split(",")) {
+                Creator author = _library.registerCreator(name.trim());
+                authors.add(author);
+            }
 
-        _library.registerBook(); // FIXME
+            Book.Builder builder = new Book.Builder()
+                    .title(components[1])
+                    .price(Integer.parseInt(components[3]))
+                    .category(WorkCategory.valueOf(components[4]))
+                    .totalCopies(Integer.parseInt(components[6]))
+                    .isbn(components[5])
+                    .authors(authors);
+            Book book = _library.registerBook(builder);
+
+            for (Creator author : authors)
+                author.addWork(book);
+        } catch (InvalidArgumentsException e) {
+            throw new UnrecognizedEntryException(e.getArgSpecification());
+        }
     }
 
     private void parseDvd(String[] components, String line) throws UnrecognizedEntryException {
         if (components.length != 7)
             throw new UnrecognizedEntryException ("Número inválido de campos (7) na descrição de um DVD: " + line);
 
-        int price = Integer.parseInt(components[3]);
-        int nCopies = Integer.parseInt(components[6]);
-        WorkCategory category = WorkCategory.valueOf(components[4]);
-        Creator creator = _library.registerCreator(components[2].trim());
+        try {
+            Creator director = _library.registerCreator(components[2].trim());
 
-        _library.registerDvd(); // FIXME
+            Dvd.Builder builder = new Dvd.Builder()
+                    .title(components[1])
+                    .price(Integer.parseInt(components[3]))
+                    .category(WorkCategory.valueOf(components[4]))
+                    .totalCopies(Integer.parseInt(components[6]))
+                    .igac(components[5])
+                    .director(director);
+            Dvd dvd = _library.registerDvd(builder);
+
+            director.addWork(dvd);
+        } catch (InvalidArgumentsException e) {
+            throw new UnrecognizedEntryException(e.getArgSpecification());
+        }
     }
 }
