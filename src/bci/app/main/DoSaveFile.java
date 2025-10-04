@@ -8,14 +8,30 @@ import pt.tecnico.uilib.menus.Command;
 import java.io.IOException;
 
 /**
- * Save to file under current name (if unnamed, query for name).
+ * Command to save the library data to a file.
+ * This class is part of the user interface layer and interacts with the `LibraryManager`
+ * to save the current state of the library to a file. If the library is not associated
+ * with a file, the user is prompted to provide a filename.
  */
 class DoSaveFile extends Command<LibraryManager> {
 
+    /**
+     * Constructs the command to save the library data to a file.
+     * Initializes the command with the label for saving the file.
+     *
+     * @param receiver the `LibraryManager` instance that handles the library operations.
+     */
     DoSaveFile(LibraryManager receiver) {
         super(Label.SAVE_FILE, receiver);
     }
 
+    /**
+     * Executes the command to save the library data to a file.
+     * If the library is associated with a file, it saves the data to that file.
+     * Otherwise, prompts the user for a filename and saves the data to the specified file.
+     *
+     * @throws RuntimeException if an error occurs during the save operation.
+     */
     @Override
     protected final void execute() {
         if (_receiver.hasAssociatedFile()) {

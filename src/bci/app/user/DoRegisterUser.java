@@ -8,16 +8,32 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
- * 4.2.1. Register new user.
+ * Command to register a new user in the library system.
+ * This class is part of the user interface layer and interacts with the `LibraryManager`
+ * to perform the user registration operation.
  */
 class DoRegisterUser extends Command<LibraryManager> {
 
+    /**
+     * Constructs the command to register a new user.
+     * Initializes the command with the label and input fields for user name and email.
+     *
+     * @param receiver the `LibraryManager` instance that handles the library operations.
+     */
     DoRegisterUser(LibraryManager receiver) {
         super(Label.REGISTER_USER, receiver);
         addStringField("name", Prompt.userName());
         addStringField("email", Prompt.userEMail());
     }
 
+    /**
+     * Executes the command to register a new user.
+     * Reads the user-provided name and email, and delegates the registration
+     * to the `LibraryManager`. Displays a success message on successful registration
+     * or throws a `UserRegistrationFailedException` if the registration fails.
+     *
+     * @throws CommandException if the user registration fails due to invalid arguments.
+     */
     @Override
     protected final void execute() throws CommandException {
         String name = stringField("name");
