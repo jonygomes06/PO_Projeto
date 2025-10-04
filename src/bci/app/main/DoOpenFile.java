@@ -11,17 +11,24 @@ class DoOpenFile extends Command<LibraryManager> {
 
     DoOpenFile(LibraryManager receiver) {
         super(Label.OPEN_FILE, receiver);
+        addStringField("filename", Prompt.openFile());
     }
 
     @Override
     protected final void execute() throws CommandException {
+        String filename = stringField("filename");
 
-        /*
+        if (_receiver.getLibrary().isModified()) {
+            boolean saveBeforeExit = Form.confirm(Prompt.saveBeforeExit());
+            if (saveBeforeExit) {
+                new DoSaveFile(_receiver).execute();
+            }
+        }
+
         try {
-            //FIXME implement command
+            _receiver.load(filename);
         } catch (UnavailableFileException efe) {
             throw new FileOpenFailedException(efe);
         }
-        */
     }
 }

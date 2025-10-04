@@ -35,3 +35,6 @@ bin/
 ### Test outputs ###
 *.diff
 *.outhyp
+
+### Serialized States ###
+works

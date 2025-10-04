@@ -27,6 +27,8 @@ public class Library implements Serializable {
     private final Map<Integer, Work> _works;
     private final Map<String, Creator> _creators;
 
+    private transient boolean _modified = false;
+
     Library() {
         _currentDate = new Date();
         _users = new TreeSet<>();
@@ -43,6 +45,7 @@ public class Library implements Serializable {
         if (days <= 0) return;
         _currentDate.advanceDate(days);
 //        updateUsersStates(); FIXME so para a entrega final
+        _modified = true;
     }
 
     public User registerUser(String name, String email) throws InvalidArgumentsException {
@@ -53,6 +56,7 @@ public class Library implements Serializable {
         User newUser = new User(name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);
+        _modified = true;
         return newUser;
     }
 
@@ -110,8 +114,11 @@ public class Library implements Serializable {
         if (name == null || name.isBlank()) {
             throw new InvalidArgumentsException("Creator name must be non-empty.");
         }
-
         return _creators.computeIfAbsent(name, Creator::new);
+    }
+
+    public boolean isModified() {
+        return _modified;
     }
 
     /**

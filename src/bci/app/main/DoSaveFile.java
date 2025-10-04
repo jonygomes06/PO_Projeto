@@ -4,7 +4,6 @@ import bci.core.LibraryManager;
 import bci.core.exception.MissingFileAssociationException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
-// FIXME add more imports if needed
 
 import java.io.IOException;
 
@@ -19,6 +18,19 @@ class DoSaveFile extends Command<LibraryManager> {
 
     @Override
     protected final void execute() {
-        // FIXME implement command and create a local Form
+        if (_receiver.hasAssociatedFile()) {
+            try {
+                _receiver.save();
+            } catch (MissingFileAssociationException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            String filename = Form.requestString(Prompt.newSaveAs());
+            try {
+                _receiver.saveAs(filename);
+            } catch (MissingFileAssociationException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

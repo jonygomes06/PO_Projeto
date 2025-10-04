@@ -15,6 +15,10 @@ public class LibraryManager {
      */
     /* The current library */
     private Library _library;
+    private String associatedFile;
+
+    /* To allow very first association with a file with no modifications */
+    private boolean _firstSave = true;
 
     /**
      * Constructor. Creates a new LibraryManager with an empty Library.
@@ -27,6 +31,10 @@ public class LibraryManager {
         return _library;
     }
 
+    public boolean hasAssociatedFile() {
+        return associatedFile != null && !associatedFile.isEmpty();
+    }
+
     /**
      * Saves the serialized application's state into the file associated to the current library
      *
@@ -35,7 +43,16 @@ public class LibraryManager {
      * @throws IOException                     if there is some error while serializing the state of the network to disk.
      **/
     public void save() throws MissingFileAssociationException, FileNotFoundException, IOException {
-        // FIXME implement serialization method
+        if (!_library.isModified() && !_firstSave)
+            return;
+
+        if (associatedFile == null || associatedFile.isEmpty())
+            throw new MissingFileAssociationException();
+
+        try (ObjectOutputStream obOut =new ObjectOutputStream(new FileOutputStream(associatedFile))) {
+            obOut.writeObject(_library);
+            _firstSave = false;
+        }
     }
 
     /**
@@ -48,7 +65,8 @@ public class LibraryManager {
      * @throws IOException                     if there is some error while serializing the state of the network to disk.
      **/
     public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
-        // FIXME implement serialization method
+        associatedFile = filename;
+        save();
     }
 
     /**
@@ -60,7 +78,12 @@ public class LibraryManager {
      *                                  an error while processing this file.
      **/
     public void load(String filename) throws UnavailableFileException {
-        // FIXME implement serialization method
+        try (ObjectInputStream obIn = new ObjectInputStream(new FileInputStream(filename))) {
+            _library = (Library) obIn.readObject();
+            associatedFile = filename;
+        } catch (IOException | ClassNotFoundException | ClassCastException e) {
+            throw new UnavailableFileException(filename);
+        }
     }
 
     /**
