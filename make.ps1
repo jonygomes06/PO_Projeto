@@ -6,7 +6,8 @@ param(
     [switch]$Run,
     [string]$Args,
     [switch]$Test,
-    [switch]$Clean
+    [switch]$Clean,
+    [switch]$BuildJar
 )
 
 # ==============================
@@ -16,8 +17,11 @@ $SRC_DIR = "src"
 $BIN_DIR = "bin"
 $MAIN_CLASS = "bci.app.App"
 $JAR = "po-uilib.jar"
+$OUTPUT_JAR = "proj.jar"
+$JAR_TOOL = "C:\Program Files\Java\jdk-24\bin\jar.exe"
+$MANIFEST_FILE = "manifest.mf"
 $TEST_DIR = "tests"
-$TEST_SCRIPT = ".\run-tests.ps1"  # PowerShell version
+$TEST_SCRIPT = ".\run-tests.ps1"
 
 # ==============================
 # Helper Functions
@@ -29,14 +33,13 @@ function Say($text, $color="White") {
 # ==============================
 # Compilation (fast)
 # ==============================
-if ($Compile) {
+if ($Compile -or $BuildJar) {
     if (-not (Test-Path $BIN_DIR)) {
         New-Item -ItemType Directory -Path $BIN_DIR | Out-Null
     }
 
     Say "→ Compiling Java sources..." "Cyan"
 
-    # Find all .java files recursively
     $javaFiles = Get-ChildItem -Path $SRC_DIR -Recurse -Filter *.java | ForEach-Object { $_.FullName }
 
     if ($javaFiles.Count -eq 0) {
@@ -44,10 +47,8 @@ if ($Compile) {
         exit 1
     }
 
-    # Determine which files need compilation
     $filesToCompile = @()
     foreach ($file in $javaFiles) {
-        # Map package path to correct .class file in bin/
         $relativePath = Resolve-Path $file | ForEach-Object {
             $_.Path.Substring((Resolve-Path $SRC_DIR).Path.Length).TrimStart('\','/')
         }
@@ -70,6 +71,52 @@ if ($Compile) {
             foreach ($f in $filesToCompile) { Say "Compiled $f" "Green" }
             Say "✅ Compilation finished." "Green"
         }
+    }
+}
+
+# ==============================
+# Build JAR (with manifest)
+# ==============================
+if ($BuildJar) {
+    Say "→ Building JAR (with manifest)..." "Cyan"
+
+    if (-not (Test-Path $JAR_TOOL)) {
+        Say "✗ jar tool not found at: $JAR_TOOL" "Red"
+        exit 1
+    }
+
+    if (-not (Test-Path $BIN_DIR)) {
+        Say "✗ No compiled classes found. Run with -Compile first." "Red"
+        exit 1
+    }
+
+    # Create manifest file
+    @"
+Manifest-Version: 1.0
+Main-Class: $MAIN_CLASS
+
+"@ | Out-File -Encoding ASCII $MANIFEST_FILE
+
+    # Remove old jar if it exists
+    if (Test-Path $OUTPUT_JAR) {
+        Remove-Item $OUTPUT_JAR -Force
+    }
+
+    # Build the JAR with the manifest
+    Push-Location $BIN_DIR
+    & "$JAR_TOOL" cfm "../$OUTPUT_JAR" "../$MANIFEST_FILE" *
+    Pop-Location
+
+    if ($LASTEXITCODE -eq 0) {
+        Say "✅ JAR created with manifest: $OUTPUT_JAR" "Green"
+    } else {
+        Say "✗ Failed to create JAR." "Red"
+        exit 1
+    }
+
+    # Clean up manifest
+    if (Test-Path $MANIFEST_FILE) {
+        Remove-Item $MANIFEST_FILE -Force
     }
 }
 
@@ -99,14 +146,17 @@ if ($Test) {
 # ==============================
 if ($Clean) {
     Say "→ Cleaning build artifacts..." "Cyan"
-    # Remove bin directory entirely
     if (Test-Path $BIN_DIR) {
         Remove-Item -Recurse -Force $BIN_DIR
     }
-    # Remove test outputs and diffs
+    if (Test-Path $OUTPUT_JAR) {
+        Remove-Item $OUTPUT_JAR -Force
+    }
+    if (Test-Path $MANIFEST_FILE) {
+        Remove-Item $MANIFEST_FILE -Force
+    }
     Get-ChildItem -Path $TEST_DIR -Recurse -Filter *.outhyp -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem -Path $TEST_DIR -Recurse -Filter *.diff -ErrorAction SilentlyContinue | Remove-Item -Force
-    # Remove saved* files
     Get-ChildItem -Path . -Filter "saved*" -ErrorAction SilentlyContinue | Remove-Item -Force
 
     Say "✅ Clean complete." "Green"
