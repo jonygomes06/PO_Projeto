@@ -5,7 +5,6 @@
 # ==============================
 # Configuration
 # ==============================
-$JAR         = "po-uilib.jar"
 $MAIN_CLASS  = "bci.app.App"
 $SRC_DIR     = "src"
 $BIN_DIR     = "bin"
@@ -55,35 +54,26 @@ function Get-DiffSnippet {
 }
 
 # ==============================
-# Ensure bin directory
+# Ensure bin directory exists
 # ==============================
-if (-not (Test-Path $BIN_DIR)) { New-Item -ItemType Directory -Path $BIN_DIR | Out-Null }
-
-# ==============================
-# Compile sources
-# ==============================
-Write-Info "Compiling Java sources..."
-$javaFiles = Get-ChildItem -Path $SRC_DIR -Recurse -Filter *.java -File -ErrorAction SilentlyContinue |
-             ForEach-Object { $_.FullName }
-
-if (-not $javaFiles) {
-    Write-Warn "No Java source files found in '$SRC_DIR'."
+if (-not (Test-Path $BIN_DIR)) {
+    Write-Err "Bin directory '$BIN_DIR' not found. Please compile the project first."
     exit 1
 }
 
-& javac -d $BIN_DIR $javaFiles *> $null
-if ($LASTEXITCODE -ne 0) {
-    Write-Err "Compilation failed. Fix errors and rerun."
+# ==============================
+# Check for compiled classes
+# ==============================
+$classFiles = Get-ChildItem -Path $BIN_DIR -Recurse -Filter *.class -File -ErrorAction SilentlyContinue
+
+if (-not $classFiles) {
+    Write-Err "No compiled class files found in '$BIN_DIR'. Please compile your project before running tests."
     exit 1
 }
-
-Write-Success "Compilation successful."
-Write-Host ""
 
 # ==============================
 # Run tests
 # ==============================
-Write-Info "Running tests in '$TEST_DIR'..."
 Write-Host ""
 
 $total = 0
