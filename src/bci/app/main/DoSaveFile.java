@@ -34,19 +34,15 @@ class DoSaveFile extends Command<LibraryManager> {
      */
     @Override
     protected final void execute() {
-        if (_receiver.hasAssociatedFile()) {
-            try {
+        try {
+            if (_receiver.hasAssociatedFile()) {
                 _receiver.save();
-            } catch (MissingFileAssociationException | IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            String filename = Form.requestString(Prompt.newSaveAs());
-            try {
+            } else {
+                String filename = Form.requestString(Prompt.newSaveAs());
                 _receiver.saveAs(filename);
-            } catch (MissingFileAssociationException | IOException e) {
-                throw new RuntimeException(e);
             }
+        } catch (MissingFileAssociationException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

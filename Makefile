@@ -3,10 +3,10 @@
 # ==============================
 SRC_DIR := src
 BIN_DIR := bin
+PROJ_BIN := proj_bin
 MAIN_CLASS := bci.app.App
 JAR := po-uilib.jar
 OUTPUT_JAR := proj.jar
-MANIFEST := manifest.mf
 TEST_DIR := tests
 TEST_SCRIPT := run-tests.sh
 
@@ -36,13 +36,12 @@ $(BIN_DIR)/.compiled: $(SOURCES)
 # ==============================
 .PHONY: build-jar
 build-jar: compile
-	@echo "→ Building JAR with manifest..."
-	@echo "Manifest-Version: 1.0" > $(MANIFEST)
-	@echo "Main-Class: $(MAIN_CLASS)" >> $(MANIFEST)
-	@echo "" >> $(MANIFEST)
 	@rm -f $(OUTPUT_JAR)
-	@cd $(BIN_DIR) && jar cfm ../$(OUTPUT_JAR) ../$(MANIFEST) .
-	@rm -f $(MANIFEST)
+	@rm -rf $(PROJ_BIN)
+	@mkdir $(PROJ_BIN) && cp -r $(BIN_DIR)/bci $(PROJ_BIN)/
+	@cd $(PROJ_BIN) && jar cf ../$(OUTPUT_JAR) .
+	@rm -rf $(PROJ_BIN)
+	@rm -rf $(BIN_DIR)
 	@echo "✅ JAR created: $(OUTPUT_JAR)"
 
 # ==============================
@@ -68,5 +67,7 @@ clean:
 	@echo "🧹 Cleaning up..."
 	@rm -rf $(BIN_DIR)
 	@rm -f $(OUTPUT_JAR)
+	@rm -rf $(PROJ_BIN)
 	@rm -f $(TEST_DIR)/*.{outhyp,diff} saved*
+	@rm -f $(SRC_DIR)/*.class
 	@echo "✅ Clean complete."
