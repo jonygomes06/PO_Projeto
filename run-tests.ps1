@@ -89,7 +89,7 @@ Get-ChildItem -Path $TEST_DIR -Filter '*.in' -File -ErrorAction SilentlyContinue
     $diffFile     = Join-Path $TEST_DIR "$baseName.diff"
 
     # Run program
-    $javaArgs = @("-cp", "`"$CLASSPATH`"", "-Din=`"$inputFile`"", "-DwriteInput=true", "-Dout=`"$outputFile`"")
+    $javaArgs = @("-cp", "`"$CLASSPATH`"", "-Din=`"$inputFile`"", "-DwriteInput=false", "-Dout=`"$outputFile`"")
     if (Test-Path $importFile) { $javaArgs += "-Dimport=`"$importFile`"" }
     & java @javaArgs $MAIN_CLASS
 

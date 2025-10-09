@@ -7,7 +7,14 @@ Menu Principal
 6 - Menu de gestão de obras
 7 - Menu de gestão de requisições
 0 - Sair
-Escolha uma opção: 5
+Escolha uma opção: Menu de Gestão de Utentes
+1 - Registar utente
+2 - Mostrar utente
+3 - Listar utentes
+4 - Mostrar notificações de utente
+5 - Saldar multa de utente
+0 - Sair
+Escolha uma opção: Introduza o nome do utente: Introduza o endereço de correio do utente: Novo utente criado com o número 1.
 Menu de Gestão de Utentes
 1 - Registar utente
 2 - Mostrar utente
@@ -15,10 +22,7 @@ Menu de Gestão de Utentes
 4 - Mostrar notificações de utente
 5 - Saldar multa de utente
 0 - Sair
-Escolha uma opção: 1
-Introduza o nome do utente: aa
-Introduza o endereço de correio do utente: bb@cc.com
-Novo utente criado com o número 1.
+Escolha uma opção: 1 - aa - bb@cc.com - NORMAL - ACTIVO
 Menu de Gestão de Utentes
 1 - Registar utente
 2 - Mostrar utente
@@ -26,8 +30,7 @@ Menu de Gestão de Utentes
 4 - Mostrar notificações de utente
 5 - Saldar multa de utente
 0 - Sair
-Escolha uma opção: 3
-1 - aa - bb@cc.com - NORMAL - ACTIVO
+Escolha uma opção: Introduza o nome do utente: Introduza o endereço de correio do utente: Novo utente criado com o número 2.
 Menu de Gestão de Utentes
 1 - Registar utente
 2 - Mostrar utente
@@ -35,19 +38,7 @@ Menu de Gestão de Utentes
 4 - Mostrar notificações de utente
 5 - Saldar multa de utente
 0 - Sair
-Escolha uma opção: 1
-Introduza o nome do utente: bb
-Introduza o endereço de correio do utente: cc@dd.com
-Novo utente criado com o número 2.
-Menu de Gestão de Utentes
-1 - Registar utente
-2 - Mostrar utente
-3 - Listar utentes
-4 - Mostrar notificações de utente
-5 - Saldar multa de utente
-0 - Sair
-Escolha uma opção: 3
-1 - aa - bb@cc.com - NORMAL - ACTIVO
+Escolha uma opção: 1 - aa - bb@cc.com - NORMAL - ACTIVO
 2 - bb - cc@dd.com - NORMAL - ACTIVO
 Menu de Gestão de Utentes
 1 - Registar utente
@@ -56,8 +47,7 @@ Menu de Gestão de Utentes
 4 - Mostrar notificações de utente
 5 - Saldar multa de utente
 0 - Sair
-Escolha uma opção: 0
-Menu Principal
+Escolha uma opção: Menu Principal
 1 - Abrir ficheiro
 2 - Guardar ficheiro
 3 - Ver data
@@ -66,4 +56,4 @@ Menu Principal
 6 - Menu de gestão de obras
 7 - Menu de gestão de requisições
 0 - Sair
-Escolha uma opção: 0
+Escolha uma opção: 
