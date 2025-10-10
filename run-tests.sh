@@ -60,9 +60,9 @@ for input_file in "$TEST_DIR"/*.in; do
 
     # Run program
     if [ -e "$import_file" ]; then
-        java -cp "$JAR:$BIN_DIR" -Dimport="$import_file" -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
+        java -cp "$JAR:$BIN_DIR" -Dimport="$import_file" -Din="$input_file" -DwriteInput=false -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
     else
-        java -cp "$JAR:$BIN_DIR" -Din="$input_file" -DwriteInput=true -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
+        java -cp "$JAR:$BIN_DIR" -Din="$input_file" -DwriteInput=false -Dout="$output_file" "$MAIN_CLASS" >/dev/null 2>&1
     fi
 
     # Check output exists
@@ -108,3 +108,12 @@ echo "Failed      : ${RED}$((total - passed))${RESET}"
 pct=$(( total > 0 ? 100 * passed / total : 0 ))
 echo "Success     : ${BOLD}$pct%${RESET}"
 echo "=============================="
+
+
+# =============================
+# Clean
+# =============================
+
+rm -f user
+rm -f user2.dat
+rm -f works

@@ -9,8 +9,6 @@ public abstract class Work implements Serializable {
     @Serial
     private static final long serialVersionUID = -7478614181433606768L;
 
-    private static int _nextId = 1;
-
     private final int _id;
     private final String _title;
     private final int _price;
@@ -20,7 +18,7 @@ public abstract class Work implements Serializable {
     private final WorkType _type;
 
     protected Work(Builder<?, ?> builder) {
-        this._id = _nextId++;
+        this._id = builder._id;
         this._title = builder._title;
         this._price = builder._price;
         this._category = builder._category;
@@ -56,11 +54,20 @@ public abstract class Work implements Serializable {
      * @param <B> Concrete Builder type
      */
     public static abstract class Builder<T extends Work, B extends Builder<T, B>> {
+        protected Integer _id;
         protected String _title;
         protected Integer _price;
         protected WorkCategory _category;
         protected Integer _totalCopies;
         protected WorkType _type;
+
+        public B id(int id) throws InvalidArgumentsException {
+            if (id < 1) {
+                throw new InvalidArgumentsException("ID must be greater than 0");
+            }
+            this._id = id;
+            return self();
+        }
 
         public B title(String title) throws InvalidArgumentsException {
             if (title == null || title.isBlank()) {

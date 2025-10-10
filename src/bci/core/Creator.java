@@ -29,7 +29,7 @@ public class Creator implements Serializable {
     public List<Work> getWorks() {
         List<Work> worksCopy = new ArrayList<>(_works);
 
-        worksCopy.sort(Comparator.comparing(Work::getTitle));
+        worksCopy.sort(Comparator.comparing(w -> w.getTitle().toLowerCase()));
 
         return Collections.unmodifiableList(worksCopy);
     }

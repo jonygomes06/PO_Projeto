@@ -78,7 +78,7 @@ public class ImportFileParser {
                     .totalCopies(Integer.parseInt(components[6]))
                     .isbn(components[5])
                     .authors(authors);
-            Book book = _library.registerBook(builder);
+            Book book = _library.registerWork(builder);
 
             for (Creator author : authors)
                 author.addWork(book);
@@ -101,7 +101,7 @@ public class ImportFileParser {
                     .totalCopies(Integer.parseInt(components[6]))
                     .igac(components[5])
                     .director(director);
-            Dvd dvd = _library.registerDvd(builder);
+            Dvd dvd = _library.registerWork(builder);
 
             director.addWork(dvd);
         } catch (InvalidArgumentsException e) {

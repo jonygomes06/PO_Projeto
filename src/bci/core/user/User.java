@@ -3,7 +3,6 @@ package bci.core.user;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,8 +10,6 @@ public class User implements Comparable<User>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 7147658457022990947L;
-
-    private static int _nextId = 1;
 
     private final int _id;
     private final String _name;
@@ -22,8 +19,8 @@ public class User implements Comparable<User>, Serializable {
     private List<Notification> _notifications;
     private int _totalFines;
 
-    public User(String name, String email) {
-        _id = _nextId++;
+    public User(int id, String name, String email) {
+        _id = id;
         _name = name;
         _email = email;
         _isActive = true;

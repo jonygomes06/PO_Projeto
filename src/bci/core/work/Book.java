@@ -62,7 +62,7 @@ public class Book extends Work {
 
         @Override
         public Book build() {
-            if (_title == null || _price == null || _category == null ||
+            if (_id == null | _title == null || _price == null || _category == null ||
                     _totalCopies == null || _isbn == null || _authors == null) {
                 throw new IllegalStateException("All fields must be set before building Book");
             }

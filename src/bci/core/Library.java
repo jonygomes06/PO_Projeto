@@ -6,8 +6,6 @@ import java.util.*;
 import bci.core.date.Date;
 import bci.core.exception.*;
 import bci.core.user.User;
-import bci.core.work.Book;
-import bci.core.work.Dvd;
 import bci.core.work.Work;
 
 /**
@@ -26,6 +24,9 @@ public class Library implements Serializable {
 
     // The current date of the library system.
     private final Date _currentDate;
+
+    private int _nextUserId = 1;
+    private int _nextWorkId = 1;
 
     // A set of all registered users.
     private final Set<User> _users;
@@ -89,7 +90,7 @@ public class Library implements Serializable {
             throw new InvalidArgumentsException("Name and email must be non-empty.");
         }
 
-        User newUser = new User(name, email);
+        User newUser = new User(_nextUserId++, name, email);
         _users.add(newUser);
         _usersById.put(newUser.getId(), newUser);
         _modified = true;
@@ -166,27 +167,15 @@ public class Library implements Serializable {
     }
 
     /**
-     * Registers a new book in the library.
+     * Registers a new work in the library.
      *
-     * @param bookBuilder the builder for creating the Book object.
-     * @return the newly registered Book object.
+     * @param workBuilder the builder for creating the Work object.
+     * @return the newly registered Work object.
      */
-    Book registerBook(Book.Builder bookBuilder) {
-        Book newBook = bookBuilder.build();
-        _works.put(newBook.getId(), newBook);
-        return newBook;
-    }
-
-    /**
-     * Registers a new DVD in the library.
-     *
-     * @param dvdBuilder the builder for creating the Dvd object.
-     * @return the newly registered Dvd object.
-     */
-    Dvd registerDvd(Dvd.Builder dvdBuilder) {
-        Dvd newDvd = dvdBuilder.build();
-        _works.put(newDvd.getId(), newDvd);
-        return newDvd;
+    <T extends Work, B extends Work.Builder<T, B>> T registerWork(B workBuilder) throws InvalidArgumentsException {
+        T newWork = workBuilder.id(_nextWorkId++).build();
+        _works.put(newWork.getId(), newWork);
+        return newWork;
     }
 
     /**
