@@ -28,16 +28,16 @@ public class Library implements Serializable {
     private int _nextUserId = 1;
     private int _nextWorkId = 1;
 
-    // A set of all registered users.
+    // A set of all registered users. Using TreeSet to automatically sort users by name and ID.
     private final Set<User> _users;
 
-    // A map of user IDs to their corresponding User objects.
+    // A map of user IDs to their corresponding User objects. Used for efficient lookup by ID.
     private final Map<Integer, User> _usersById;
 
-    // A map of work IDs to their corresponding Work objects.
+    // A map of work IDs to their corresponding Work objects. Using LinkedHashMap to preserve insertion order.
     private final Map<Integer, Work> _works;
 
-    // A map of creator names to their corresponding Creator objects.
+    // A map of creator names to their corresponding Creator objects. Used for efficient lookup by name.
     private final Map<String, Creator> _creators;
 
     // A flag indicating whether the library's state has been modified.
@@ -119,7 +119,7 @@ public class Library implements Serializable {
      *
      * @return a set of all users.
      */
-    public Set<User> getUsers() {
+    public Collection<User> getUsers() {
         return Collections.unmodifiableSet(_users);
     }
 
@@ -140,13 +140,26 @@ public class Library implements Serializable {
         return work;
     }
 
+    public Collection<Work> searchWorksByTerm(String term) {
+        if (term == null || term.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String lowerCaseTerm = term.toLowerCase();
+
+        return _works.values()
+                     .stream()
+                     .filter(work -> work.hasTerm(lowerCaseTerm))
+                     .toList();
+    }
+
     /**
      * Gets an unmodifiable view of all works in the library.
      *
      * @return a map of work IDs to Work objects.
      */
-    public Map<Integer, Work> getWorks() {
-        return Collections.unmodifiableMap(_works);
+    public Collection<Work> getWorks() {
+        return Collections.unmodifiableCollection(_works.values());
     }
 
     /**

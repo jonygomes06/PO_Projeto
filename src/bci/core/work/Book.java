@@ -4,6 +4,8 @@ import bci.core.Creator;
 import bci.core.exception.InvalidArgumentsException;
 
 import java.io.Serial;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,6 +22,11 @@ public class Book extends Work {
         super(builder);
         this._isbn = builder._isbn;
         this._authors = builder._authors;
+    }
+
+    @Override
+    protected Collection<Creator> getCreators() {
+        return Collections.unmodifiableList(_authors);
     }
 
     @Override

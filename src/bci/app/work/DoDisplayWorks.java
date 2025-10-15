@@ -30,7 +30,6 @@ class DoDisplayWorks extends Command<LibraryManager> {
     protected final void execute() {
         _display.popup(_receiver.getLibrary()
                                 .getWorks()
-                                .values()
                                 .stream()
                                 .map(Work::toString)
                                 .toList());

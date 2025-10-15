@@ -4,6 +4,8 @@ import bci.core.Creator;
 import bci.core.exception.InvalidArgumentsException;
 
 import java.io.Serial;
+import java.util.Collection;
+import java.util.Collections;
 
 public class Dvd extends Work {
 
@@ -17,6 +19,11 @@ public class Dvd extends Work {
         super(builder);
         this._igac = builder._igac;
         this._director = builder._director;
+    }
+
+    @Override
+    protected Collection<Creator> getCreators() {
+        return Collections.singleton(_director);
     }
 
     @Override

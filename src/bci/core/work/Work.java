@@ -1,9 +1,11 @@
 package bci.core.work;
 
+import bci.core.Creator;
 import bci.core.exception.InvalidArgumentsException;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
 
 public abstract class Work implements Serializable {
     @Serial
@@ -34,6 +36,20 @@ public abstract class Work implements Serializable {
     public String getTitle() {
         return _title;
     }
+
+    public boolean hasTerm(String term) {
+        if (_title.toLowerCase().contains(term)) {
+            return true;
+        }
+        for (Creator creator : getCreators()) {
+            if (creator.getName().toLowerCase().contains(term)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected abstract Collection<Creator> getCreators();
 
     protected String getGeneralDescription() {
         return String.format("%d - %d de %d - %s - %s - %d - %s",

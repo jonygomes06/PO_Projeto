@@ -1,6 +1,7 @@
 package bci.app.work;
 
 import bci.core.LibraryManager;
+import bci.core.work.Work;
 import pt.tecnico.uilib.menus.Command;
 
 /**
@@ -10,7 +11,7 @@ class DoPerformSearch extends Command<LibraryManager> {
 
     DoPerformSearch(LibraryManager receiver) {
         super(Label.PERFORM_SEARCH, receiver);
-        //FIXME add command fields
+        addStringField("searchTerm", Prompt.searchTerm());
     }
 
     /**
@@ -18,6 +19,11 @@ class DoPerformSearch extends Command<LibraryManager> {
      */
     @Override
     protected final void execute() {
-        //FIXME implement command
+        String searchTerm = stringField("searchTerm");
+        _display.popup(_receiver.getLibrary()
+                                .searchWorksByTerm(searchTerm)
+                                .stream()
+                                .map(Work::toString)
+                                .toList());
     }
 }

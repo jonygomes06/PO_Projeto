@@ -18,7 +18,6 @@ public class Date implements Serializable {
     }
 
     public void advanceDate(int days) {
-        if (days <= 0) return;
         currentDate += days;
     }
 }

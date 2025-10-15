@@ -140,3 +140,14 @@ Write-Host ("Failed      : {0}" -f ($total - $passed)) -ForegroundColor Red
 $pct = if ($total) { [math]::Floor(100 * $passed / $total) } else { 0 }
 Write-Host ("Success     : {0}%" -f $pct) -ForegroundColor White
 Write-Host "=============================="
+
+# =============================
+# Clean
+# =============================
+Remove-Item "cumpridor"
+Remove-Item "faltoso"
+Remove-Item "requisicao"
+Remove-Item "user"
+Remove-Item "user2.dat"
+Remove-Item "works"
+
