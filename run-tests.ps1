@@ -144,10 +144,10 @@ Write-Host "=============================="
 # =============================
 # Clean
 # =============================
-Remove-Item "cumpridor"
-Remove-Item "faltoso"
-Remove-Item "requisicao"
-Remove-Item "user"
-Remove-Item "user2.dat"
-Remove-Item "works"
+# Remove-Item "cumpridor"
+# Remove-Item "faltoso"
+# Remove-Item "requisicao"
+# Remove-Item "user"
+# Remove-Item "user2.dat"
+# Remove-Item "works"
 

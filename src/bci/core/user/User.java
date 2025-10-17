@@ -2,12 +2,13 @@ package bci.core.user;
 
 import bci.core.request.Request;
 import bci.core.work.Work;
+import bci.core.work.WorkObserver;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
-public class User implements Comparable<User>, Serializable {
+public class User extends WorkObserver implements Comparable<User>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 7147658457022990947L;
@@ -30,7 +31,7 @@ public class User implements Comparable<User>, Serializable {
         _classification = NormalState.getInstance();
         _activeRequests = new ArrayList<>();
         _allRequests = new LinkedList<>();
-        _notifications = new ArrayList<>();
+        _notifications = new LinkedList<>();
         _totalFines = 0;
     }
 
@@ -62,6 +63,12 @@ public class User implements Comparable<User>, Serializable {
         return Collections.unmodifiableList(_activeRequests);
     }
 
+    public Collection<Notification> getNotifications() {
+        List<Notification> notificationsCopy = new ArrayList<>(_notifications);
+        _notifications.clear();
+        return notificationsCopy;
+    }
+
     public void updateState(int currentDate) {
         calculateTotalFines(currentDate);
         _isActive = _totalFines == 0;
@@ -91,6 +98,11 @@ public class User implements Comparable<User>, Serializable {
         if (!request.shouldPayFine(currentDate)) {
             _activeRequests.remove(request);
         }
+    }
+
+    @Override
+    public void update(Notification notification) {
+        _notifications.add(notification);
     }
 
     @Override

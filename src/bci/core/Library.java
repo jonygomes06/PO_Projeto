@@ -5,6 +5,7 @@ import java.util.*;
 
 import bci.core.exception.*;
 import bci.core.request.*;
+import bci.core.user.Notification;
 import bci.core.user.User;
 import bci.core.work.Work;
 
@@ -132,6 +133,11 @@ public class Library implements Serializable {
         return user;
     }
 
+    public Collection<Notification> getUserNotifications(int userId) throws NoSuchUserWithIdException {
+        User user = getUserById(userId);
+        return user.getNotifications();
+    }
+
     /**
      * Gets an unmodifiable view of all registered users.
      *
@@ -225,6 +231,14 @@ public class Library implements Serializable {
         _modified = true;
 
         return deadline;
+    }
+
+    public void subscribeUserToWorkNotifications(int userId, int workId)
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
+        User user = getUserById(userId);
+        Work work = getWorkById(workId);
+        work.subscribe(user);
+        _modified = true;
     }
 
     public Request returnWork(int userId, int workId)

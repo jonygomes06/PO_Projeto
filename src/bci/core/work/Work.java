@@ -3,6 +3,8 @@ package bci.core.work;
 import bci.core.Creator;
 import bci.core.request.Request;
 import bci.core.exception.InvalidArgumentsException;
+import bci.core.user.Notification;
+import bci.core.user.NotificationType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,6 +24,7 @@ public abstract class Work implements Serializable {
     private int _availableCopies;
     private final WorkType _type;
     private final List<Request> _requests;
+    private final List<WorkObserver> _observers;
 
     protected Work(Builder<?, ?> builder) {
         _id = builder._id;
@@ -32,6 +35,7 @@ public abstract class Work implements Serializable {
         _availableCopies = builder._totalCopies;
         _type = builder._type;
         _requests = new LinkedList<>();
+        _observers = new LinkedList<>();
     }
 
     public int getId() {
@@ -73,10 +77,33 @@ public abstract class Work implements Serializable {
     public void requestWork(Request request) {
         _requests.add(request);
         _availableCopies--;
+        notifyNewRequestMade();
     }
 
     public void returnWork() {
-        _availableCopies++;
+        if (++_availableCopies == 1) {
+            notifyWorkHasAvailableCopy();
+        }
+    }
+
+    public void subscribe(WorkObserver observer) {
+        _observers.add(observer);
+    }
+
+    private void notifyNewRequestMade() {
+        Notification notification = new Notification(NotificationType.REQUISICAO, this);
+        notifyObservers(notification);
+    }
+
+    private void notifyWorkHasAvailableCopy() {
+        Notification notification = new Notification(NotificationType.DISPONIBILIDADE, this);
+        notifyObservers(notification);
+    }
+
+    private void notifyObservers(Notification notification) {
+        for (WorkObserver observer : _observers) {
+            observer.update(notification);
+        }
     }
 
     protected abstract Collection<Creator> getCreators();

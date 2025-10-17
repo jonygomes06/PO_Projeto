@@ -40,8 +40,13 @@ class DoRequestWork extends Command<LibraryManager> {
             throw new NoSuchWorkException(workId);
         } catch (RequestRuleFailedException e) {
             if (e.getRuleId() == WorkHasAvailableCopyRule.RULE_ID) {
-                boolean wantsToBeNotified = Form.confirm(Prompt.returnNotificationPreference());
-                // FIXME subscribe user to notifications for work
+                if (Form.confirm(Prompt.returnNotificationPreference())) {
+                    try {
+                        lib.subscribeUserToWorkNotifications(userId, workId);
+                    } catch (NoSuchUserWithIdException | NoSuchWorkWithIdException ex) {
+                        throw new RuntimeException();
+                    }
+                }
             } else {
                 throw new BorrowingRuleFailedException(userId, workId, e.getRuleId());
             }
