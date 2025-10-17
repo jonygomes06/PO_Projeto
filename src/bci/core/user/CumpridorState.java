@@ -2,7 +2,12 @@ package bci.core.user;
 
 import bci.core.work.Work;
 
-class CumpridorState implements UserClassificationState {
+import java.io.Serial;
+
+class CumpridorState extends UserClassificationState {
+    @Serial
+    private static final long serialVersionUID = 7147111111111111120L;
+
     private static final CumpridorState CUMPRIDOR = new CumpridorState();
 
     private CumpridorState() {}
@@ -12,9 +17,12 @@ class CumpridorState implements UserClassificationState {
     }
 
     @Override
-    public UserClassificationState updateStateOnDateChange(User user, int currentDate) {
-        // FIXME: implement state change logic
-        return null;
+    public UserClassificationState updateState(User user, int currentDate) {
+        if (user.countRecentLateReturns(5, currentDate) > 0) {
+            return NormalState.getInstance().updateState(user, currentDate);
+        }
+
+        return this;
     }
 
     @Override
@@ -37,5 +45,10 @@ class CumpridorState implements UserClassificationState {
         } else {
             return 30;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CUMPRIDOR";
     }
 }

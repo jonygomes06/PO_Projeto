@@ -1,10 +1,15 @@
 package bci.app.request;
 
-import bci.core.LibraryManager;
+import bci.app.exception.BorrowingRuleFailedException;
 import bci.app.exception.NoSuchUserException;
 import bci.app.exception.NoSuchWorkException;
-import bci.app.exception.BorrowingRuleFailedException;
-import pt.tecnico.uilib.forms.Form;
+import bci.core.Library;
+import bci.core.LibraryManager;
+import bci.core.exception.NoSuchUserWithIdException;
+import bci.core.exception.NoSuchWorkWithIdException;
+import bci.core.exception.RequestRuleFailedException;
+import bci.core.user.User;
+import bci.core.work.Work;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -15,11 +20,24 @@ class DoRequestWork extends Command<LibraryManager> {
 
     DoRequestWork(LibraryManager receiver) {
         super(Label.REQUEST_WORK, receiver);
-        //FIXME add command fields
+        addIntegerField("userId", bci.app.user.Prompt.userId());
+        addIntegerField("workId", bci.app.work.Prompt.workId());
     }
 
     @Override
     protected final void execute() throws CommandException {
-        //FIXME implement command
+        Library lib = _receiver.getLibrary();
+        int userId = integerField("userId");
+        int workId = integerField("workId");
+
+        try {
+            _display.popup(Message.workReturnDay(workId, lib.requestWork(userId, workId)));
+        } catch (NoSuchUserWithIdException e) {
+            throw new NoSuchUserException(userId);
+        } catch (NoSuchWorkWithIdException e) {
+            throw new NoSuchWorkException(workId);
+        } catch (RequestRuleFailedException e) {
+            throw new BorrowingRuleFailedException(userId, workId, e.getRuleId());
+        }
     }
 }

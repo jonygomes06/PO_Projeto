@@ -2,7 +2,12 @@ package bci.core.user;
 
 import bci.core.work.Work;
 
-class NormalState implements UserClassificationState {
+import java.io.Serial;
+
+class NormalState extends UserClassificationState {
+    @Serial
+    private static final long serialVersionUID = 7147111111111111122L;
+
     private static final NormalState NORMAL = new NormalState();
 
     private NormalState() {}
@@ -12,9 +17,14 @@ class NormalState implements UserClassificationState {
     }
 
     @Override
-    public UserClassificationState updateStateOnDateChange(User user, int currentDate) {
-        // FIXME: implement state change logic
-        return null;
+    public UserClassificationState updateState(User user, int currentDate) {
+        if (user.countRecentLateReturns(3, currentDate) == 3) {
+            return FaltosoState.getInstance();
+        } else if (user.countConsecutiveOnTimeReturns(5, currentDate) == 5) {
+            return CumpridorState.getInstance();
+        }
+
+        return this;
     }
 
     @Override
@@ -37,5 +47,10 @@ class NormalState implements UserClassificationState {
         } else {
             return 15;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "NORMAL";
     }
 }

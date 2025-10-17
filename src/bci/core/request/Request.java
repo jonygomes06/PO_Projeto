@@ -41,19 +41,27 @@ public class Request implements Serializable {
         return _work;
     }
 
-    public int calculateFine(int currentDate) {
-        if (!shouldPayFine(currentDate)) {
-            return 0;
-        }
-        int daysOverdue = _returnDate == -1 ? currentDate - _deadline : _returnDate - _deadline;
-        return daysOverdue * INCREMENTAL_FINE_EUROS;
+    public boolean hasBeenReturned() {
+        return _returnDate != -1;
     }
 
-    private boolean shouldPayFine(int currentDate) {
+    public void markAsReturned(int returnDate) {
+        _returnDate = returnDate;
+    }
+
+    public void liquidateFine() {
+        _fineLiquidated = true;
+    }
+
+    public boolean shouldPayFine(int currentDate) {
         return currentDate > _deadline && !_fineLiquidated;
     }
 
-    private boolean isActive(int currentDate) {
-        return _returnDate == -1 || shouldPayFine(currentDate);
+    public int calculateFine(int currentDate) {
+        if (shouldPayFine(currentDate)) {
+            int daysOverdue = _returnDate == -1 ? currentDate - _deadline : _returnDate - _deadline;
+            return daysOverdue * INCREMENTAL_FINE_EUROS;
+        }
+        return 0;
     }
 }

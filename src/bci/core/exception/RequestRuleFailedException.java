@@ -6,7 +6,14 @@ public class RequestRuleFailedException extends Exception {
     @Serial
     private static final long serialVersionUID = 7147111111111111112L;
 
+    private final int _ruleId;
+
     public RequestRuleFailedException(int userId, int workId, int ruleId) {
         super("Borrowing rule " + ruleId + " failing for user " + userId + " and work " + workId);
+        _ruleId = ruleId;
+    }
+
+    public int getRuleId() {
+        return _ruleId;
     }
 }

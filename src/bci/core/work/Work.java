@@ -21,7 +21,6 @@ public abstract class Work implements Serializable {
     private int _totalCopies;
     private int _availableCopies;
     private final WorkType _type;
-    private int _numActiveRequests;
     private final List<Request> _requests;
 
     protected Work(Builder<?, ?> builder) {
@@ -32,7 +31,6 @@ public abstract class Work implements Serializable {
         _totalCopies = builder._totalCopies;
         _availableCopies = builder._totalCopies;
         _type = builder._type;
-        _numActiveRequests = 0;
         _requests = new LinkedList<>();
     }
 
@@ -74,8 +72,11 @@ public abstract class Work implements Serializable {
 
     public void requestWork(Request request) {
         _requests.add(request);
-        _numActiveRequests++;
         _availableCopies--;
+    }
+
+    public void returnWork() {
+        _availableCopies++;
     }
 
     protected abstract Collection<Creator> getCreators();

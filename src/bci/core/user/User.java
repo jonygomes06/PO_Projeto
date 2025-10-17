@@ -18,7 +18,7 @@ public class User implements Comparable<User>, Serializable {
     private boolean _isActive;
     private UserClassificationState _classification;
     private final List<Request> _activeRequests;
-    private final List<Request> _archivedRequests;
+    private final List<Request> _allRequests;
     private final List<Notification> _notifications;
     private int _totalFines;
 
@@ -29,7 +29,7 @@ public class User implements Comparable<User>, Serializable {
         _isActive = true;
         _classification = NormalState.getInstance();
         _activeRequests = new ArrayList<>();
-        _archivedRequests = new LinkedList<>();
+        _allRequests = new LinkedList<>();
         _notifications = new ArrayList<>();
         _totalFines = 0;
     }
@@ -62,8 +62,33 @@ public class User implements Comparable<User>, Serializable {
         return Collections.unmodifiableList(_activeRequests);
     }
 
+    public void updateState(int currentDate) {
+        calculateTotalFines(currentDate);
+        _isActive = _totalFines == 0;
+        _classification = _classification.updateState(this, currentDate);
+    }
+
+    public void payFine(int currentDate) {
+        for (Request request : _activeRequests) {
+            if (request.hasBeenReturned()) {
+                _totalFines -= request.calculateFine(currentDate);
+                request.liquidateFine();
+                _activeRequests.remove(request);
+            }
+        }
+    }
+
     public void requestWork(Request request) {
         _activeRequests.add(request);
+        _allRequests.addFirst(request);
+    }
+
+    public void returnWork(Request request, int currentDate) {
+        request.markAsReturned(currentDate);
+
+        if (!request.shouldPayFine(currentDate)) {
+            _activeRequests.remove(request);
+        }
     }
 
     @Override
@@ -86,5 +111,37 @@ public class User implements Comparable<User>, Serializable {
             return String.format("%d - %s - %s - %s - ACTIVO", _id, _name, _email, _classification);
         else
             return String.format("%d - %s - %s - %s - SUSPENSO - EUR %d", _id, _name, _email, _classification, _totalFines);
+    }
+
+    private void calculateTotalFines(int currentDate) {
+        _totalFines = 0;
+        for (Request request : _activeRequests) {
+            _totalFines += request.calculateFine(currentDate);
+        }
+    }
+
+    int countConsecutiveOnTimeReturns(int n, int currentDate) {
+        int count = 0;
+        for (Request request : _allRequests) {
+            if (request.hasBeenReturned() && !request.shouldPayFine(currentDate) && count < n) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        return count;
+    }
+
+    int countRecentLateReturns(int n, int currentDate) {
+        int count = 0;
+        int checked = 0;
+        for (Request request : _allRequests) {
+            if (checked == n) break;
+            if (request.shouldPayFine(currentDate)) {
+                count++;
+            }
+            checked++;
+        }
+        return count;
     }
 }

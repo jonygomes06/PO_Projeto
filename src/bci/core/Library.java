@@ -91,7 +91,7 @@ public class Library implements Serializable {
     public void advanceDate(int days) {
         if (days <= 0) return;
         _currentDate.advanceDate(days);
-        // updateUsersStates(); FIXME so para a entrega final
+        updateUsersStates();
         _modified = true;
     }
 
@@ -141,6 +141,15 @@ public class Library implements Serializable {
         return Collections.unmodifiableSet(_users);
     }
 
+    public void payFine(int userId) throws NoSuchUserWithIdException, UserNotSuspendedException {
+        User user = getUserById(userId);
+        if (user.isActive()) {
+            throw new UserNotSuspendedException(userId);
+        }
+        user.payFine(_currentDate.getCurrentDate());
+        _modified = true;
+    }
+
     /**
      * Retrieves a work by its ID.
      *
@@ -156,19 +165,6 @@ public class Library implements Serializable {
         }
 
         return work;
-    }
-
-    public Collection<Work> searchWorksByTerm(String term) {
-        if (term == null || term.isBlank()) {
-            return Collections.emptyList();
-        }
-
-        String lowerCaseTerm = term.toLowerCase();
-
-        return _works.values()
-                     .stream()
-                     .filter(work -> work.hasTerm(lowerCaseTerm))
-                     .toList();
     }
 
     /**
@@ -197,8 +193,21 @@ public class Library implements Serializable {
         return creator;
     }
 
+    public Collection<Work> searchWorksByTerm(String term) {
+        if (term == null || term.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String lowerCaseTerm = term.toLowerCase();
+
+        return _works.values()
+                .stream()
+                .filter(work -> work.hasTerm(lowerCaseTerm))
+                .toList();
+    }
+
     public int requestWork(int userId, int workId)
-            throws NoSuchWorkWithIdException, NoSuchUserWithIdException, RequestRuleFailedException {
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException, RequestRuleFailedException {
         User user = getUserById(userId);
         Work work = getWorkById(workId);
 
@@ -216,6 +225,29 @@ public class Library implements Serializable {
         _modified = true;
 
         return deadline;
+    }
+
+    public Request returnWork(int userId, int workId) throws NoSuchUserWithIdException {
+        User user = getUserById(userId);
+
+        Request requestToReturn = user.getActiveRequests()
+                                      .stream()
+                                      .filter(request -> request.getWork().getId() == workId)
+                                      .findFirst()
+                                      .orElse(null);
+
+        if (requestToReturn == null) {
+            return null;
+        }
+
+        int currentDate = _currentDate.getCurrentDate();
+        _activeRequests.remove(requestToReturn.getId());
+        _archivedRequests.add(requestToReturn);
+        user.returnWork(requestToReturn, currentDate);
+        requestToReturn.getWork().returnWork();
+        _modified = true;
+
+        return requestToReturn;
     }
 
     /**
@@ -242,6 +274,13 @@ public class Library implements Serializable {
             throw new InvalidArgumentsException("Creator name must be non-empty.");
         }
         return _creators.computeIfAbsent(name, Creator::new);
+    }
+
+    private void updateUsersStates() {
+        int currentDate = _currentDate.getCurrentDate();
+        for (Request request : _activeRequests.values()) {
+            request.getUser().updateState(currentDate);
+        }
     }
 
     /**
