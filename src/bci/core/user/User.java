@@ -69,13 +69,15 @@ public class User implements Comparable<User>, Serializable {
     }
 
     public void payFine(int currentDate) {
+        List<Request> toRemove = new ArrayList<>();
         for (Request request : _activeRequests) {
             if (request.hasBeenReturned()) {
                 _totalFines -= request.calculateFine(currentDate);
                 request.liquidateFine();
-                _activeRequests.remove(request);
+                toRemove.add(request);
             }
         }
+        _activeRequests.removeAll(toRemove);
     }
 
     public void requestWork(Request request) {

@@ -8,8 +8,10 @@ import bci.core.LibraryManager;
 import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.NoSuchWorkWithIdException;
 import bci.core.exception.RequestRuleFailedException;
+import bci.core.request.WorkHasAvailableCopyRule;
 import bci.core.user.User;
 import bci.core.work.Work;
+import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -37,7 +39,12 @@ class DoRequestWork extends Command<LibraryManager> {
         } catch (NoSuchWorkWithIdException e) {
             throw new NoSuchWorkException(workId);
         } catch (RequestRuleFailedException e) {
-            throw new BorrowingRuleFailedException(userId, workId, e.getRuleId());
+            if (e.getRuleId() == WorkHasAvailableCopyRule.RULE_ID) {
+                boolean wantsToBeNotified = Form.confirm(Prompt.returnNotificationPreference());
+                // FIXME subscribe user to notifications for work
+            } else {
+                throw new BorrowingRuleFailedException(userId, workId, e.getRuleId());
+            }
         }
     }
 }

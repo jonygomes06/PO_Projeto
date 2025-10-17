@@ -227,17 +227,19 @@ public class Library implements Serializable {
         return deadline;
     }
 
-    public Request returnWork(int userId, int workId) throws NoSuchUserWithIdException {
+    public Request returnWork(int userId, int workId)
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException, WorkNotBorrowedByUserException {
         User user = getUserById(userId);
+        Work work = getWorkById(workId);
 
         Request requestToReturn = user.getActiveRequests()
                                       .stream()
-                                      .filter(request -> request.getWork().getId() == workId)
+                                      .filter(request -> request.getWork().equals(work))
                                       .findFirst()
                                       .orElse(null);
 
         if (requestToReturn == null) {
-            return null;
+            throw new WorkNotBorrowedByUserException(workId, userId);
         }
 
         int currentDate = _currentDate.getCurrentDate();
