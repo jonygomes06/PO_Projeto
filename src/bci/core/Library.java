@@ -3,8 +3,8 @@ package bci.core;
 import java.io.*;
 import java.util.*;
 
-import bci.core.date.Date;
 import bci.core.exception.*;
+import bci.core.request.*;
 import bci.core.user.User;
 import bci.core.work.Work;
 
@@ -27,6 +27,7 @@ public class Library implements Serializable {
 
     private int _nextUserId = 1;
     private int _nextWorkId = 1;
+    private int _nextRequestId = 1;
 
     // A set of all registered users. Using TreeSet to automatically sort users by name and ID.
     private final Set<User> _users;
@@ -39,6 +40,12 @@ public class Library implements Serializable {
 
     // A map of creator names to their corresponding Creator objects. Used for efficient lookup by name.
     private final Map<String, Creator> _creators;
+
+    private final Map<Integer, Request> _activeRequests;
+
+    private final List<Request> _archivedRequests;
+
+    private final List<RequestRule> _requestRules;
 
     // A flag indicating whether the library's state has been modified.
     private transient boolean _modified = false;
@@ -53,6 +60,17 @@ public class Library implements Serializable {
         _usersById = new HashMap<>();
         _works = new LinkedHashMap<>();
         _creators = new HashMap<>();
+        _activeRequests = new HashMap<>();
+        _archivedRequests = new LinkedList<>();
+
+        _requestRules = List.of(
+                new NoDuplicateRequestsRule(),
+                new UserIsActiveRule(),
+                new WorkHasAvailableCopyRule(),
+                new SimultaneousRequestsLimitRule(),
+                new WorkCategoryIsNotReferenceRule(),
+                new WorkPriceLimitRule()
+        );
     }
 
     /**
@@ -177,6 +195,27 @@ public class Library implements Serializable {
         }
 
         return creator;
+    }
+
+    public int requestWork(int userId, int workId)
+            throws NoSuchWorkWithIdException, NoSuchUserWithIdException, RequestRuleFailedException {
+        User user = getUserById(userId);
+        Work work = getWorkById(workId);
+
+        for (RequestRule rule : _requestRules) {
+            rule.check(user, work);
+        }
+
+        int deadline = _currentDate.getCurrentDate() + user.getRequestDuration(work);
+
+        Request newRequest = new Request(_nextRequestId++, user, work, deadline);
+
+        _activeRequests.put(newRequest.getId(), newRequest);
+        user.requestWork(newRequest);
+        work.requestWork(newRequest);
+        _modified = true;
+
+        return deadline;
     }
 
     /**

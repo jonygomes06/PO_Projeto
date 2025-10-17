@@ -1,11 +1,14 @@
 package bci.core.work;
 
 import bci.core.Creator;
+import bci.core.request.Request;
 import bci.core.exception.InvalidArgumentsException;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Work implements Serializable {
     @Serial
@@ -18,15 +21,19 @@ public abstract class Work implements Serializable {
     private int _totalCopies;
     private int _availableCopies;
     private final WorkType _type;
+    private int _numActiveRequests;
+    private final List<Request> _requests;
 
     protected Work(Builder<?, ?> builder) {
-        this._id = builder._id;
-        this._title = builder._title;
-        this._price = builder._price;
-        this._category = builder._category;
-        this._totalCopies = builder._totalCopies;
-        this._availableCopies = builder._totalCopies;
-        this._type = builder._type;
+        _id = builder._id;
+        _title = builder._title;
+        _price = builder._price;
+        _category = builder._category;
+        _totalCopies = builder._totalCopies;
+        _availableCopies = builder._totalCopies;
+        _type = builder._type;
+        _numActiveRequests = 0;
+        _requests = new LinkedList<>();
     }
 
     public int getId() {
@@ -35,6 +42,22 @@ public abstract class Work implements Serializable {
 
     public String getTitle() {
         return _title;
+    }
+
+    public int getPrice() {
+        return _price;
+    }
+
+    public WorkCategory getCategory() {
+        return _category;
+    }
+
+    public int getTotalCopies() {
+        return _totalCopies;
+    }
+
+    public int getAvailableCopies() {
+        return _availableCopies;
     }
 
     public boolean hasTerm(String term) {
@@ -47,6 +70,12 @@ public abstract class Work implements Serializable {
             }
         }
         return false;
+    }
+
+    public void requestWork(Request request) {
+        _requests.add(request);
+        _numActiveRequests++;
+        _availableCopies--;
     }
 
     protected abstract Collection<Creator> getCreators();

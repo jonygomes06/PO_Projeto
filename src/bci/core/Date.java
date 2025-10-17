@@ -1,4 +1,4 @@
-package bci.core.date;
+package bci.core;
 
 import java.io.Serial;
 import java.io.Serializable;

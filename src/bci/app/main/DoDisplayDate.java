@@ -1,7 +1,7 @@
 package bci.app.main;
 
 import bci.core.LibraryManager;
-import bci.core.date.Date;
+import bci.core.Date;
 import pt.tecnico.uilib.menus.Command;
 
 /**

@@ -1,10 +1,11 @@
 package bci.core.user;
 
+import bci.core.request.Request;
+import bci.core.work.Work;
+
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class User implements Comparable<User>, Serializable {
 
@@ -15,8 +16,10 @@ public class User implements Comparable<User>, Serializable {
     private final String _name;
     private final String _email;
     private boolean _isActive;
-    private UserClassification _classification;
-    private List<Notification> _notifications;
+    private UserClassificationState _classification;
+    private final List<Request> _activeRequests;
+    private final List<Request> _archivedRequests;
+    private final List<Notification> _notifications;
     private int _totalFines;
 
     public User(int id, String name, String email) {
@@ -24,7 +27,9 @@ public class User implements Comparable<User>, Serializable {
         _name = name;
         _email = email;
         _isActive = true;
-        _classification = UserClassification.NORMAL;
+        _classification = NormalState.getInstance();
+        _activeRequests = new ArrayList<>();
+        _archivedRequests = new LinkedList<>();
         _notifications = new ArrayList<>();
         _totalFines = 0;
     }
@@ -41,8 +46,24 @@ public class User implements Comparable<User>, Serializable {
         return _isActive;
     }
 
-    public List<Notification> getNotifications() {
-        return Collections.unmodifiableList(_notifications);
+    public int getMaxSimultaneousRequests() {
+        return _classification.getMaxSimultaneousRequests();
+    }
+
+    public int getMaxWorkRequestPrice() {
+        return _classification.getMaxWorkRequestPrice();
+    }
+
+    public int getRequestDuration(Work work) {
+        return _classification.getRequestDuration(work);
+    }
+
+    public Collection<Request> getActiveRequests() {
+        return Collections.unmodifiableList(_activeRequests);
+    }
+
+    public void requestWork(Request request) {
+        _activeRequests.add(request);
     }
 
     @Override

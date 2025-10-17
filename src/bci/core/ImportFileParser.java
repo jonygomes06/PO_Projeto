@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportFileParser {
+class ImportFileParser {
     private final Library _library;
 
     ImportFileParser(Library lib) {
