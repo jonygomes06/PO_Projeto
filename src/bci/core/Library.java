@@ -6,6 +6,7 @@ import java.util.*;
 import bci.core.exception.*;
 import bci.core.request.*;
 import bci.core.user.Notification;
+import bci.core.user.NotificationType;
 import bci.core.user.User;
 import bci.core.work.Work;
 
@@ -259,10 +260,11 @@ public class Library implements Serializable {
         return deadline;
     }
 
-    public void subscribeUserToWorkNotifications(int userId, int workId)
+    public void subscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
         User user = getUserById(userId);
         Work work = getWorkById(workId);
+        user.subscribeToNotificationType(type);
         work.subscribe(user);
         _modified = true;
     }

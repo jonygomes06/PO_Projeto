@@ -9,6 +9,7 @@ import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.NoSuchWorkWithIdException;
 import bci.core.exception.RequestRuleFailedException;
 import bci.core.request.WorkHasAvailableCopyRule;
+import bci.core.user.NotificationType;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -40,7 +41,7 @@ class DoRequestWork extends Command<LibraryManager> {
             if (e.getRuleId() == WorkHasAvailableCopyRule.RULE_ID) {
                 if (Form.confirm(Prompt.returnNotificationPreference())) {
                     try {
-                        lib.subscribeUserToWorkNotifications(userId, workId);
+                        lib.subscribeUserToWorkNotifications(userId, workId, NotificationType.DISPONIBILIDADE);
                     } catch (NoSuchUserWithIdException | NoSuchWorkWithIdException ex) {
                         throw new RuntimeException();
                     }

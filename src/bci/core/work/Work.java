@@ -118,6 +118,7 @@ public abstract class Work implements Serializable {
     public void requestWork(Request request) {
         _requests.add(request);
         _availableCopies--;
+        notifyWorkWasRequested();
     }
 
     public void returnWork() {
@@ -130,6 +131,11 @@ public abstract class Work implements Serializable {
         _observers.add(observer);
     }
 
+    private void notifyWorkWasRequested() {
+        Notification notification = new Notification(NotificationType.REQUISICAO, this);
+        notifyObservers(notification);
+    }
+
     private void notifyWorkHasAvailableCopy() {
         Notification notification = new Notification(NotificationType.DISPONIBILIDADE, this);
         notifyObservers(notification);
@@ -137,7 +143,9 @@ public abstract class Work implements Serializable {
 
     private void notifyObservers(Notification notification) {
         for (WorkObserver observer : _observers) {
-            observer.update(notification);
+            if (observer.getSubscribedTypes().contains(notification.getType())) {
+                observer.update(notification);
+            }
         }
     }
 
