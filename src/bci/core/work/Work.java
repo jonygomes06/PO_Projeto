@@ -1,6 +1,7 @@
 package bci.core.work;
 
 import bci.core.Creator;
+import bci.core.exception.NotEnoughInventoryException;
 import bci.core.request.Request;
 import bci.core.exception.InvalidArgumentsException;
 import bci.core.user.Notification;
@@ -9,6 +10,7 @@ import bci.core.user.NotificationType;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,25 +43,23 @@ public abstract class Work implements Serializable {
     public int getId() {
         return _id;
     }
-
     public String getTitle() {
         return _title;
     }
-
     public int getPrice() {
         return _price;
     }
-
     public WorkCategory getCategory() {
         return _category;
     }
-
     public int getTotalCopies() {
         return _totalCopies;
     }
-
     public int getAvailableCopies() {
         return _availableCopies;
+    }
+    public Collection<Request> getRequests() {
+        return Collections.unmodifiableList(_requests);
     }
 
     public boolean hasTerm(String term) {
@@ -72,6 +72,47 @@ public abstract class Work implements Serializable {
             }
         }
         return false;
+    }
+
+    public void changeInventory(int amount) throws NotEnoughInventoryException {
+        if (amount + _availableCopies < 0) {
+            throw new NotEnoughInventoryException(_id, amount, _availableCopies);
+        }
+
+        _availableCopies += amount;
+        _totalCopies += amount;
+
+        if (amount > 0 && _availableCopies - amount == 0) {
+            notifyWorkHasAvailableCopy();
+        }
+    }
+
+    public boolean shouldBeRemovedFromSystem() {
+        return _totalCopies == 0;
+    }
+
+    /**
+     * Disposes the work and its dependents and returns creators with no more works in the system.
+     * @return List of creators associated with the work that should be disposed.
+     * @throws IllegalStateException if total copies are greater than zero.
+     */
+    public Collection<Creator> dispose() {
+        if (_totalCopies > 0) {
+            throw new IllegalStateException("Cannot dispose work. Total copies greater than zero.");
+        }
+
+        List<Creator> creatorsToDispose = new LinkedList<>();
+        for (Creator creator : getCreators()) {
+            creator.removeWork(this);
+            if (creator.shouldBeRemovedFromSystem()) {
+                creatorsToDispose.add(creator);
+            }
+        }
+
+        _requests.clear();
+        _observers.clear();
+
+        return creatorsToDispose;
     }
 
     public void requestWork(Request request) {

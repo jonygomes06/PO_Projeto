@@ -9,8 +9,6 @@ import bci.core.exception.NoSuchUserWithIdException;
 import bci.core.exception.NoSuchWorkWithIdException;
 import bci.core.exception.RequestRuleFailedException;
 import bci.core.request.WorkHasAvailableCopyRule;
-import bci.core.user.User;
-import bci.core.work.Work;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;

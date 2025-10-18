@@ -100,6 +100,11 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
         }
     }
 
+    public void disposeRequest(Request request) {
+        _activeRequests.remove(request);
+        _allRequests.remove(request);
+    }
+
     @Override
     public void update(Notification notification) {
         _notifications.add(notification);

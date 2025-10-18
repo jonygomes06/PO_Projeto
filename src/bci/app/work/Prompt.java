@@ -16,6 +16,10 @@ public interface Prompt {
         return "Introduza a quantidade a actualizar: ";
     }
 
+    static String amountToUpdate() {
+        return "Introduza a quantidade a actualizar: ";
+    }
+
     /**
      * <code>searchTerm</code> gera a mensagem que indica que é necessário
      * fornecer um termo de pesquisa ao sistema.

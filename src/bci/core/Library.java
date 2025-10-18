@@ -199,6 +199,32 @@ public class Library implements Serializable {
         return creator;
     }
 
+    public void changeWorkInventory(int workId, int amount) throws NoSuchWorkWithIdException, NotEnoughInventoryException {
+        Work work = getWorkById(workId);
+        work.changeInventory(amount);
+
+        if (work.shouldBeRemovedFromSystem()) {
+            Collection<Request> requestsToDispose = work.getRequests();
+
+            for (Request request : requestsToDispose) {
+                _activeRequests.remove(request.getId());
+                request.getUser().disposeRequest(request);
+                _archivedRequests.remove(request);
+            }
+
+
+            Collection<Creator> creatorsToDispose = work.dispose();
+
+            for (Creator creator : creatorsToDispose) {
+                _creators.remove(creator.getName());
+            }
+
+            _works.remove(workId);
+        }
+
+        _modified = true;
+    }
+
     public Collection<Work> searchWorksByTerm(String term) {
         if (term == null || term.isBlank()) {
             return Collections.emptyList();

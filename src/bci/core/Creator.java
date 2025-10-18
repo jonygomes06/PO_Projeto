@@ -40,6 +40,14 @@ public class Creator implements Serializable {
         }
     }
 
+    public void removeWork(Work work) {
+        _works.remove(work);
+    }
+
+    public boolean shouldBeRemovedFromSystem() {
+        return _works.isEmpty();
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Creator creator && _name.equals(creator._name);
