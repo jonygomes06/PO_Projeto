@@ -9,16 +9,14 @@ public class Notification implements Serializable {
     @Serial
     private static final long serialVersionUID = -2335739609784493516L;
 
-    private final NotificationType _type;
-    private final Work _associatedWork;
+    private final String _message;
 
     public Notification(NotificationType type, Work associatedWork) {
-        _type = type;
-        _associatedWork = associatedWork;
+        _message = String.format("%s: %s", type.toString(), associatedWork.toString());
     }
 
     @Override
     public String toString() {
-        return String.format("%s: %s", _type.toString(), _associatedWork.toString());
+        return _message;
     }
 }

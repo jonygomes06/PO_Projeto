@@ -77,7 +77,6 @@ public abstract class Work implements Serializable {
     public void requestWork(Request request) {
         _requests.add(request);
         _availableCopies--;
-        notifyNewRequestMade();
     }
 
     public void returnWork() {
@@ -88,11 +87,6 @@ public abstract class Work implements Serializable {
 
     public void subscribe(WorkObserver observer) {
         _observers.add(observer);
-    }
-
-    private void notifyNewRequestMade() {
-        Notification notification = new Notification(NotificationType.REQUISICAO, this);
-        notifyObservers(notification);
     }
 
     private void notifyWorkHasAvailableCopy() {
