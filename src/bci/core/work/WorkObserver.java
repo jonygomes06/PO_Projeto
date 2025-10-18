@@ -12,7 +12,7 @@ public abstract class WorkObserver implements Serializable {
     @Serial
     private static final long serialVersionUID = 7147111111111111124L;
 
-    private transient final List<NotificationType> _subscribedTypes = new ArrayList<>();
+    private final List<NotificationType> _subscribedTypes = new ArrayList<>();
 
     public List<NotificationType> getSubscribedTypes() {
         return _subscribedTypes;

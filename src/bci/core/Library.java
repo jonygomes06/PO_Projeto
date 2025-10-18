@@ -269,6 +269,15 @@ public class Library implements Serializable {
         _modified = true;
     }
 
+    public void unsubscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
+        User user = getUserById(userId);
+        Work work = getWorkById(workId);
+        user.subscribeToNotificationType(type);
+        work.subscribe(user);
+        _modified = true;
+    }
+
     public Request returnWork(int userId, int workId)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException, WorkNotBorrowedByUserException {
         User user = getUserById(userId);
