@@ -33,6 +33,7 @@ class DoRequestWork extends Command<LibraryManager> {
 
         try {
             _display.popup(Message.workReturnDay(workId, lib.requestWork(userId, workId)));
+            lib.unsubscribeUserToWorkNotifications(userId, workId, NotificationType.DISPONIBILIDADE);
         } catch (NoSuchUserWithIdException e) {
             throw new NoSuchUserException(userId);
         } catch (NoSuchWorkWithIdException e) {

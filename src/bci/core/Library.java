@@ -264,7 +264,7 @@ public class Library implements Serializable {
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
         User user = getUserById(userId);
         Work work = getWorkById(workId);
-        user.subscribeToNotificationType(type);
+        user.subscribeToWorkForNotification(workId, type);
         work.subscribe(user);
         _modified = true;
     }
@@ -273,8 +273,10 @@ public class Library implements Serializable {
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
         User user = getUserById(userId);
         Work work = getWorkById(workId);
-        user.subscribeToNotificationType(type);
-        work.subscribe(user);
+        user.unsubscribeFromWorkForNotification(workId, type);
+        if (user.getSubscribedTypesOfWork(workId).isEmpty()) {
+            work.unsubscribe(user);
+        }
         _modified = true;
     }
 

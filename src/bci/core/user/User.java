@@ -77,14 +77,21 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
 
     public void payFine(int currentDate) {
         List<Request> toRemove = new ArrayList<>();
+        boolean hasOverdueReturnsLeft = false;
         for (Request request : _activeRequests) {
             if (request.hasBeenReturned()) {
                 _totalFines -= request.calculateFine(currentDate);
                 request.liquidateFine();
                 toRemove.add(request);
+            } else if (!_isActive && !hasOverdueReturnsLeft && request.shouldPayFine(currentDate)) {
+                hasOverdueReturnsLeft = true;
             }
         }
         _activeRequests.removeAll(toRemove);
+
+        if (!hasOverdueReturnsLeft) {
+            _isActive = true;
+        }
     }
 
     public void requestWork(Request request) {
@@ -98,6 +105,8 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
         if (!request.shouldPayFine(currentDate)) {
             _activeRequests.remove(request);
         }
+
+        updateState(currentDate);
     }
 
     public void disposeRequest(Request request) {

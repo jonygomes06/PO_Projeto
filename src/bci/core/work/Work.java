@@ -131,6 +131,10 @@ public abstract class Work implements Serializable {
         _observers.add(observer);
     }
 
+    public void unsubscribe(WorkObserver observer) {
+        _observers.remove(observer);
+    }
+
     private void notifyWorkWasRequested() {
         Notification notification = new Notification(NotificationType.REQUISICAO, this);
         notifyObservers(notification);
@@ -143,7 +147,7 @@ public abstract class Work implements Serializable {
 
     private void notifyObservers(Notification notification) {
         for (WorkObserver observer : _observers) {
-            if (observer.getSubscribedTypes().contains(notification.getType())) {
+            if (observer.getSubscribedTypesOfWork(_id).contains(notification.getType())) {
                 observer.update(notification);
             }
         }

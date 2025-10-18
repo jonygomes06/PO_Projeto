@@ -36,7 +36,7 @@ class DoReturnWork extends Command<LibraryManager> {
 
             if (!request.shouldPayFine(currentDate)) { return; }
 
-            _display.popup(Message.showFine(workId, request.calculateFine(currentDate)));
+            _display.popup(Message.showFine(userId, request.calculateFine(currentDate)));
 
             if (Form.confirm(Prompt.finePaymentChoice()))
                 lib.payFine(userId);
