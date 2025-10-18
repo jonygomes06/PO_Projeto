@@ -4,7 +4,7 @@
 param(
     [switch]$Compile,
     [switch]$Run,
-    [string]$Args,
+    [string]$RunArgs,
     [switch]$Test,
     [switch]$Clean,
     [switch]$BuildJar
@@ -82,7 +82,8 @@ if ($BuildJar) {
 # ==============================
 if ($Run) {
     Say "→ Running main program..." "Cyan"
-    & java -cp $CLASSPATH $MAIN_CLASS $Args
+    Write-Host $RunArgs
+    & java -cp $CLASSPATH $RunArgs $MAIN_CLASS
 }
 
 # ==============================

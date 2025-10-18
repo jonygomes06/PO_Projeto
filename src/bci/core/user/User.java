@@ -83,7 +83,7 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
                 _totalFines -= request.calculateFine(currentDate);
                 request.liquidateFine();
                 toRemove.add(request);
-            } else if (!_isActive && !hasOverdueReturnsLeft && request.shouldPayFine(currentDate)) {
+            } else if (!_isActive && !hasOverdueReturnsLeft && request.isOverdue(currentDate)) {
                 hasOverdueReturnsLeft = true;
             }
         }
@@ -151,7 +151,7 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
     int countConsecutiveOnTimeReturns(int n, int currentDate) {
         int count = 0;
         for (Request request : _allRequests) {
-            if (request.hasBeenReturned() && !request.shouldPayFine(currentDate) && count < n) {
+            if (!request.isOverdue(currentDate) && !request.shouldPayFine(currentDate) && count < n) {
                 count++;
             } else {
                 break;
@@ -165,7 +165,7 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
         int checked = 0;
         for (Request request : _allRequests) {
             if (checked == n) break;
-            if (request.shouldPayFine(currentDate)) {
+            if (request.isOverdue(currentDate) || request.shouldPayFine(currentDate)) {
                 count++;
             }
             checked++;
