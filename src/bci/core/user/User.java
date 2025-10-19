@@ -69,6 +69,10 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
         return notificationsCopy;
     }
 
+    public int getTotalFines() {
+        return _totalFines;
+    }
+
     public void updateState(int currentDate) {
         _isActive = hasNoSuspensionFlags(currentDate);
 

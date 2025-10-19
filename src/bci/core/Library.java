@@ -239,6 +239,26 @@ public class Library implements Serializable {
                 .toList();
     }
 
+    public void subscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
+        User user = getUserById(userId);
+        Work work = getWorkById(workId);
+        user.subscribeToWorkForNotification(workId, type);
+        work.subscribe(user);
+        _modified = true;
+    }
+
+    public void unsubscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
+        User user = getUserById(userId);
+        Work work = getWorkById(workId);
+        user.unsubscribeFromWorkForNotification(workId, type);
+        if (user.getSubscribedTypesOfWork(workId).isEmpty()) {
+            work.unsubscribe(user);
+        }
+        _modified = true;
+    }
+
     public int requestWork(int userId, int workId)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException, RequestRuleFailedException {
         User user = getUserById(userId);
@@ -258,26 +278,6 @@ public class Library implements Serializable {
         _modified = true;
 
         return deadline;
-    }
-
-    public void subscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
-            throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
-        User user = getUserById(userId);
-        Work work = getWorkById(workId);
-        user.subscribeToWorkForNotification(workId, type);
-        work.subscribe(user);
-        _modified = true;
-    }
-
-    public void unsubscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
-            throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
-        User user = getUserById(userId);
-        Work work = getWorkById(workId);
-        user.unsubscribeFromWorkForNotification(workId, type);
-        if (user.getSubscribedTypesOfWork(workId).isEmpty()) {
-            work.unsubscribe(user);
-        }
-        _modified = true;
     }
 
     public Request returnWork(int userId, int workId)
