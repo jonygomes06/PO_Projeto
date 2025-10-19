@@ -18,7 +18,7 @@ class CumpridorState extends UserClassificationState {
 
     @Override
     public UserClassificationState updateState(User user, int currentDate) {
-        if (user.countRecentLateReturns(5, currentDate) > 0) {
+        if (user.countRecentLateReturns(5) > 0) {
             return NormalState.getInstance().updateState(user, currentDate);
         }
 

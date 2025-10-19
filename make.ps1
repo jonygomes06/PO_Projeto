@@ -82,7 +82,6 @@ if ($BuildJar) {
 # ==============================
 if ($Run) {
     Say "→ Running main program..." "Cyan"
-    Write-Host $RunArgs
     & java -cp $CLASSPATH $RunArgs $MAIN_CLASS
 }
 

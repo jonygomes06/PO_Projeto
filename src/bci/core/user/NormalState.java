@@ -18,7 +18,7 @@ class NormalState extends UserClassificationState {
 
     @Override
     public UserClassificationState updateState(User user, int currentDate) {
-        if (user.countRecentLateReturns(3, currentDate) == 3) {
+        if (user.countRecentLateReturns(3) == 3) {
             return FaltosoState.getInstance();
         } else if (user.countConsecutiveOnTimeReturns(5, currentDate) == 5) {
             return CumpridorState.getInstance();

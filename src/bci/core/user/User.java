@@ -70,28 +70,23 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
     }
 
     public void updateState(int currentDate) {
-        calculateTotalFines(currentDate);
-        _isActive = _totalFines == 0;
+        _isActive = hasNoSuspensionFlags(currentDate);
+
         _classification = _classification.updateState(this, currentDate);
     }
 
     public void payFine(int currentDate) {
         List<Request> toRemove = new ArrayList<>();
-        boolean hasOverdueReturnsLeft = false;
         for (Request request : _activeRequests) {
             if (request.hasBeenReturned()) {
-                _totalFines -= request.calculateFine(currentDate);
                 request.liquidateFine();
                 toRemove.add(request);
-            } else if (!_isActive && !hasOverdueReturnsLeft && request.isOverdue(currentDate)) {
-                hasOverdueReturnsLeft = true;
             }
         }
         _activeRequests.removeAll(toRemove);
+        _totalFines = 0;
 
-        if (!hasOverdueReturnsLeft) {
-            _isActive = true;
-        }
+        _isActive = hasNoSuspensionFlags(currentDate);
     }
 
     public void requestWork(Request request) {
@@ -104,6 +99,10 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
 
         if (!request.shouldPayFine(currentDate)) {
             _activeRequests.remove(request);
+        } else {
+            int fine = request.calculateFine(currentDate);
+            _totalFines += fine;
+            _isActive = false;
         }
 
         updateState(currentDate);
@@ -141,17 +140,10 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
             return String.format("%d - %s - %s - %s - SUSPENSO - EUR %d", _id, _name, _email, _classification, _totalFines);
     }
 
-    private void calculateTotalFines(int currentDate) {
-        _totalFines = 0;
-        for (Request request : _activeRequests) {
-            _totalFines += request.calculateFine(currentDate);
-        }
-    }
-
     int countConsecutiveOnTimeReturns(int n, int currentDate) {
         int count = 0;
         for (Request request : _allRequests) {
-            if (!request.isOverdue(currentDate) && !request.shouldPayFine(currentDate) && count < n) {
+            if (!request.shouldPayFine(currentDate) && count < n) {
                 count++;
             } else {
                 break;
@@ -160,16 +152,27 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
         return count;
     }
 
-    int countRecentLateReturns(int n, int currentDate) {
+    int countRecentLateReturns(int n) {
         int count = 0;
         int checked = 0;
         for (Request request : _allRequests) {
             if (checked == n) break;
-            if (request.isOverdue(currentDate) || request.shouldPayFine(currentDate)) {
+            if (request.wasOverdue()) {
                 count++;
             }
             checked++;
         }
         return count;
+    }
+
+    private boolean hasNoSuspensionFlags(int currentDate) {
+        if (_totalFines > 0) return false;
+
+        for (Request request : _activeRequests) {
+            if (request.isOverdue(currentDate)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

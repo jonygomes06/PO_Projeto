@@ -57,13 +57,17 @@ public class Request implements Serializable {
         return !hasBeenReturned() && currentDate > _deadline;
     }
 
+    public boolean wasOverdue() {
+        return hasBeenReturned() && _returnDate > _deadline;
+    }
+
     public boolean shouldPayFine(int currentDate) {
         return hasBeenReturned() && currentDate > _deadline && !_fineLiquidated;
     }
 
     public int calculateFine(int currentDate) {
         if (shouldPayFine(currentDate)) {
-            int daysOverdue = currentDate - _deadline;
+            int daysOverdue = _returnDate - _deadline;
             return daysOverdue * INCREMENTAL_FINE_EUROS;
         }
         return 0;
