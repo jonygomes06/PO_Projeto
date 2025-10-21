@@ -147,7 +147,7 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
     int countConsecutiveOnTimeReturns(int n, int currentDate) {
         int count = 0;
         for (Request request : _allRequests) {
-            if (!request.shouldPayFine(currentDate) && count < n) {
+            if (!request.wasOverdue() && !request.isOverdue(currentDate) && !request.shouldPayFine(currentDate) && count < n) {
                 count++;
             } else {
                 break;

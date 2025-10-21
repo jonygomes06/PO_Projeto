@@ -46,7 +46,7 @@ build-jar:
 # ==============================
 .PHONY: run
 run: compile
-	@java -cp "$(CLASSPATH)" "$(MAIN_CLASS)" $(ARGS)
+	@java -cp "$(CLASSPATH)" $(ARGS) "$(MAIN_CLASS)"
 
 # ==============================
 # Run Tests
@@ -65,4 +65,5 @@ clean:
 	@rm -rf "$(BIN_DIR)" "$(PROJ_BIN)" "$(OUTPUT_JAR)"
 	@find "$(TEST_DIR)" -type f \( -name "*.outhyp" -o -name "*.diff" \) -delete
 	@rm -f saved* "$(SRC_DIR)"/*.class
+	@rm -f cumpridor faltoso requisicao
 	@echo "✅ Clean complete."
