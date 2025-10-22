@@ -15,16 +15,49 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
- * 4.4.1. Request work.
+ * UI command for requesting a work (requirement 4.4.1).
+ * <p>
+ * Responsibilities:
+ * <ul>
+ *   <li>Collect user and work identifiers.</li>
+ *   <li>Request the work via the {@link Library}.</li>
+ *   <li>Display the expected return day on success.</li>
+ *   <li>Handle (un)subscription to availability notifications when no copy is available.</li>
+ *   <li>Map domain exceptions to application-level exceptions.</li>
+ * </ul>
  */
 class DoRequestWork extends Command<LibraryManager> {
 
+    /**
+     * Creates the command and registers input fields for user and work identifiers.
+     *
+     * @param receiver the {@link LibraryManager} that provides access to the {@link Library}
+     */
     DoRequestWork(LibraryManager receiver) {
         super(Label.REQUEST_WORK, receiver);
         addIntegerField("userId", bci.app.user.Prompt.userId());
         addIntegerField("workId", bci.app.work.Prompt.workId());
     }
 
+    /**
+     * Executes the request workflow:
+     * <ol>
+     *   <li>Reads the user and work identifiers from the form.</li>
+     *   <li>Attempts to request the work in the library.</li>
+     *   <li>On success, shows the expected return day and unsubscribes the user
+     *       from availability notifications.</li>
+     *   <li>If no copy is available, optionally subscribes the user to availability
+     *       notifications based on confirmation.</li>
+     * </ol>
+     * Exception mapping:
+     * <ul>
+     *   <li>{@link NoSuchUserWithIdException} → {@link NoSuchUserException}</li>
+     *   <li>{@link NoSuchWorkWithIdException} → {@link NoSuchWorkException}</li>
+     *   <li>Other {@link RequestRuleFailedException} → {@link BorrowingRuleFailedException}</li>
+     * </ul>
+     *
+     * @throws CommandException if an application-level error must be reported to the UI
+     */
     @Override
     protected final void execute() throws CommandException {
         Library lib = _receiver.getLibrary();

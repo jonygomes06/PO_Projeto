@@ -14,7 +14,11 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
- * 4.4.2. Return a work.
+ * Command to handle the return of a borrowed work by a user.
+ * <p>
+ * Executes the return process, checks for fines, and processes fine payment if necessary.
+ * <p>
+ * Use case: 4.4.2. Return a work.
  */
 class DoReturnWork extends Command<LibraryManager> {
 
@@ -23,7 +27,13 @@ class DoReturnWork extends Command<LibraryManager> {
         addIntegerField("userId", bci.app.user.Prompt.userId());
         addIntegerField("workId", bci.app.work.Prompt.workId());
     }
-
+    /**
+     * Executes the return flow:
+     * - calls the core to return the work
+     * - if a fine is due, shows it and optionally processes payment
+     *
+     * @throws CommandException mapped UI exceptions for not found entities or invalid state
+     */
     @Override
     protected final void execute() throws CommandException {
         Library lib = _receiver.getLibrary();

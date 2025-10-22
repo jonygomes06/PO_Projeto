@@ -11,25 +11,25 @@ public interface Prompt {
     static String workId() {
         return "Introduza o número da obra: ";
     }
-
-    static String amountToDecrement() {
-        return "Introduza a quantidade a actualizar: ";
-    }
-
+    /**
+     * @return message requesting the amount to update.
+     */
     static String amountToUpdate() {
         return "Introduza a quantidade a actualizar: ";
     }
 
     /**
-     * <code>searchTerm</code> gera a mensagem que indica que é necessário
-     * fornecer um termo de pesquisa ao sistema.
+     * <code>searchTerm</code> generates the message indicating that a search term
+     * must be provided to the system.
      *
-     * @return <code>String</code> com a mensagem
+     * @return <code>String</code> with the message
      */
     static String searchTerm() {
         return "Introduza o termo de pesquisa: ";
     }
-
+    /**
+     * @return message requesting the creator's identifier.
+     */
     static String creatorId() {
         return "Introduza o identificador do criador: ";
     }

@@ -33,13 +33,13 @@ interface Prompt {
         return "Ficheiro sem nome. " + saveAs();
     }
 
-    /**
-     * <code>daysToAdvance</code> gera a mensagem que indica que é necessário
-     * fornecer um número de dias ao sistema, para fazer avançar a data. O valor da
-     * data é medido em dias e é um número inteiro.
-     *
-     * @return <code>String</code> com a mensagem
-     */
+/**
+* <code>daysToAdvance</code> generates the message indicating that it is necessary
+* to provide a number of days to the system, in order to advance the date. The value of
+* the date is measured in days and is an integer.
+*
+* @return <code>String</code> with the message
+*/
     static String daysToAdvance() {
         return "Introduza número de dias a avançar: ";
     }

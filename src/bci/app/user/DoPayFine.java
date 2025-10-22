@@ -9,15 +9,22 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
- * 4.2.5. Settle a fine.
+ * Creates the command and registers the required input fields.
  */
 class DoPayFine extends Command<LibraryManager> {
 
     DoPayFine(LibraryManager receiver) {
         super(Label.PAY_FINE, receiver);
-        addIntegerField("userId", bci.app.user.Prompt.userId());
+        addIntegerField("userId", Prompt.userId());
     }
-
+    /**
+     * Executes the pay fine action for the provided user ID.
+     * <p>
+     * Retrieves the {@code userId} from the form, invokes the library service to pay
+     * the user's fine, and translates domain exceptions into UI exceptions.
+     *
+     * @throws CommandException if the user does not exist or is active
+     */
     @Override
     protected final void execute() throws CommandException {
         int userId = integerField("userId");

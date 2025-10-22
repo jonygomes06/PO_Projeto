@@ -12,6 +12,7 @@ import bci.core.work.Work;
 
 /**
  * Class that represents the library as a whole.
+ * <p>
  * This class manages the library's state, including users, works (books and DVDs), and creators.
  * It provides methods for registering users, works, and creators, as well as retrieving and managing them.
  * Implements Serializable for persistence.
@@ -24,32 +25,64 @@ public class Library implements Serializable {
     @Serial
     private static final long serialVersionUID = 202501101348L;
 
-    // The current date of the library system.
+    /**
+     * The current date of the library system.
+     */
     private final Date _currentDate;
 
+    /**
+     * Next user ID to be assigned.
+     */
     private int _nextUserId = 1;
+
+    /**
+     * Next work ID to be assigned.
+     */
     private int _nextWorkId = 1;
+
+    /**
+     * Next request ID to be assigned.
+     */
     private int _nextRequestId = 1;
 
-    // A set of all registered users. Using TreeSet to automatically sort users by name and ID.
+    /**
+     * A set of all registered users. Using TreeSet to automatically sort users by name and ID.
+     */
     private final Set<User> _users;
 
-    // A map of user IDs to their corresponding User objects. Used for efficient lookup by ID.
+    /**
+     * A map of user IDs to their corresponding User objects. Used for efficient lookup by ID.
+     */
     private final Map<Integer, User> _usersById;
 
-    // A map of work IDs to their corresponding Work objects. Using LinkedHashMap to preserve insertion order.
+    /**
+     * A map of work IDs to their corresponding Work objects. Using LinkedHashMap to preserve insertion order.
+     */
     private final Map<Integer, Work> _works;
 
-    // A map of creator names to their corresponding Creator objects. Used for efficient lookup by name.
+    /**
+     * A map of creator names to their corresponding Creator objects. Used for efficient lookup by name.
+     */
     private final Map<String, Creator> _creators;
 
+    /**
+     * A map of active request IDs to their corresponding Request objects.
+     */
     private final Map<Integer, Request> _activeRequests;
 
+    /**
+     * A list of archived requests.
+     */
     private final List<Request> _archivedRequests;
 
+    /**
+     * List of rules to validate requests.
+     */
     private final List<RequestRule> _requestRules;
 
-    // A flag indicating whether the library's state has been modified.
+    /**
+     * A flag indicating whether the library's state has been modified.
+     */
     private transient boolean _modified = false;
 
     /**
@@ -134,6 +167,13 @@ public class Library implements Serializable {
         return user;
     }
 
+    /**
+     * Gets the notifications for a user.
+     *
+     * @param userId the ID of the user.
+     * @return a collection of notifications for the user.
+     * @throws NoSuchUserWithIdException if no user with the given ID exists.
+     */
     public Collection<Notification> getUserNotifications(int userId) throws NoSuchUserWithIdException {
         User user = getUserById(userId);
         return user.getNotifications();
@@ -148,6 +188,13 @@ public class Library implements Serializable {
         return Collections.unmodifiableSet(_users);
     }
 
+    /**
+     * Pays the fine for a suspended user.
+     *
+     * @param userId the ID of the user.
+     * @throws NoSuchUserWithIdException if no user with the given ID exists.
+     * @throws UserNotSuspendedException if the user is not suspended.
+     */
     public void payFine(int userId) throws NoSuchUserWithIdException, UserNotSuspendedException {
         User user = getUserById(userId);
         if (user.isActive()) {
@@ -177,7 +224,7 @@ public class Library implements Serializable {
     /**
      * Gets an unmodifiable view of all works in the library.
      *
-     * @return a map of work IDs to Work objects.
+     * @return a collection of all works.
      */
     public Collection<Work> getWorks() {
         return Collections.unmodifiableCollection(_works.values());
@@ -200,6 +247,14 @@ public class Library implements Serializable {
         return creator;
     }
 
+    /**
+     * Changes the inventory of a work.
+     *
+     * @param workId the ID of the work.
+     * @param amount the amount to change.
+     * @throws NoSuchWorkWithIdException if no work with the given ID exists.
+     * @throws NotEnoughInventoryException if there is not enough inventory.
+     */
     public void changeWorkInventory(int workId, int amount) throws NoSuchWorkWithIdException, NotEnoughInventoryException {
         Work work = getWorkById(workId);
         work.changeInventory(amount);
@@ -213,7 +268,6 @@ public class Library implements Serializable {
                 _archivedRequests.remove(request);
             }
 
-
             Collection<Creator> creatorsToDispose = work.dispose();
 
             for (Creator creator : creatorsToDispose) {
@@ -226,6 +280,12 @@ public class Library implements Serializable {
         _modified = true;
     }
 
+    /**
+     * Searches works by a term.
+     *
+     * @param term the search term.
+     * @return a collection of works matching the term.
+     */
     public Collection<Work> searchWorksByTerm(String term) {
         if (term == null || term.isBlank()) {
             return Collections.emptyList();
@@ -239,6 +299,15 @@ public class Library implements Serializable {
                 .toList();
     }
 
+    /**
+     * Subscribes a user to notifications for a work.
+     *
+     * @param userId the ID of the user.
+     * @param workId the ID of the work.
+     * @param type the type of notification.
+     * @throws NoSuchUserWithIdException if no user with the given ID exists.
+     * @throws NoSuchWorkWithIdException if no work with the given ID exists.
+     */
     public void subscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
         User user = getUserById(userId);
@@ -248,6 +317,15 @@ public class Library implements Serializable {
         _modified = true;
     }
 
+    /**
+     * Unsubscribes a user from notifications for a work.
+     *
+     * @param userId the ID of the user.
+     * @param workId the ID of the work.
+     * @param type the type of notification.
+     * @throws NoSuchUserWithIdException if no user with the given ID exists.
+     * @throws NoSuchWorkWithIdException if no work with the given ID exists.
+     */
     public void unsubscribeUserToWorkNotifications(int userId, int workId, NotificationType type)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException {
         User user = getUserById(userId);
@@ -259,6 +337,16 @@ public class Library implements Serializable {
         _modified = true;
     }
 
+    /**
+     * Requests a work for a user.
+     *
+     * @param userId the ID of the user.
+     * @param workId the ID of the work.
+     * @return the deadline for the request.
+     * @throws NoSuchUserWithIdException if no user with the given ID exists.
+     * @throws NoSuchWorkWithIdException if no work with the given ID exists.
+     * @throws RequestRuleFailedException if any request rule fails.
+     */
     public int requestWork(int userId, int workId)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException, RequestRuleFailedException {
         User user = getUserById(userId);
@@ -280,6 +368,16 @@ public class Library implements Serializable {
         return deadline;
     }
 
+    /**
+     * Returns a work borrowed by a user.
+     *
+     * @param userId the ID of the user.
+     * @param workId the ID of the work.
+     * @return the returned Request object.
+     * @throws NoSuchUserWithIdException if no user with the given ID exists.
+     * @throws NoSuchWorkWithIdException if no work with the given ID exists.
+     * @throws WorkNotBorrowedByUserException if the work was not borrowed by the user.
+     */
     public Request returnWork(int userId, int workId)
             throws NoSuchUserWithIdException, NoSuchWorkWithIdException, WorkNotBorrowedByUserException {
         User user = getUserById(userId);
@@ -310,6 +408,7 @@ public class Library implements Serializable {
      *
      * @param workBuilder the builder for creating the Work object.
      * @return the newly registered Work object.
+     * @throws InvalidArgumentsException if the builder arguments are invalid.
      */
     <T extends Work, B extends Work.Builder<T, B>> T registerWork(B workBuilder) throws InvalidArgumentsException {
         T newWork = workBuilder.id(_nextWorkId++).build();
@@ -331,6 +430,9 @@ public class Library implements Serializable {
         return _creators.computeIfAbsent(name, Creator::new);
     }
 
+    /**
+     * Updates the states of all users based on the current date.
+     */
     private void updateUsersStates() {
         int currentDate = _currentDate.getCurrentDate();
         for (Request request : _activeRequests.values()) {

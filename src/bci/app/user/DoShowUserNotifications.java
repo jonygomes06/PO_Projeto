@@ -7,15 +7,24 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
- * 4.2.3. Show notifications of a specific user.
+ * Command to show notifications of a specific user.
+ * Invokes the library to fetch notifications for the provided user id.
  */
 class DoShowUserNotifications extends Command<LibraryManager> {
-
+    /**
+     * Creates the command and registers input fields.
+     *
+     * @param receiver the `LibraryManager` that executes the action
+     */
     DoShowUserNotifications(LibraryManager receiver) {
         super(Label.SHOW_USER_NOTIFICATIONS, receiver);
         addIntegerField("userId", Prompt.userId());
     }
-
+    /**
+     * Executes the command: reads the user id and displays the user's notifications.
+     *
+     * @throws CommandException if the user does not exist
+     */
     @Override
     protected final void execute() throws CommandException {
         int userId = integerField("userId");

@@ -16,7 +16,7 @@ class DoRegisterUser extends Command<LibraryManager> {
 
     /**
      * Constructs the command to register a new user.
-     * Initializes the command with the label and input fields for user name and email.
+     * Initializes the command with the label and input fields for username and email.
      *
      * @param receiver the `LibraryManager` instance that handles the library operations.
      */
