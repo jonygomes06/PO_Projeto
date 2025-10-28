@@ -120,6 +120,14 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
         return _totalFines;
     }
 
+    public int getTotalFinesNegative() {
+        return -_totalFines;
+    }
+
+    public int getTotalValueOfRequests() {
+        return _allRequests.stream().mapToInt(r -> r.getWork().getPrice()).sum();
+    }
+
     /**
      * Updates the user state and classification based on the current date.
      * @param currentDate the current date
@@ -228,6 +236,10 @@ public class User extends WorkObserver implements Comparable<User>, Serializable
             return String.format("%d - %s - %s - %s - ACTIVO", _id, _name, _email, _classification);
         else
             return String.format("%d - %s - %s - %s - SUSPENSO - EUR %d", _id, _name, _email, _classification, _totalFines);
+    }
+
+    public String getFineDescription() {
+        return String.format("%d - %s", _totalFines, _name);
     }
 
     /**

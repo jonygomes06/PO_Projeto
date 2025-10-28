@@ -3,6 +3,7 @@ package bci.app.request;
 import bci.app.exception.BorrowingRuleFailedException;
 import bci.app.exception.NoSuchUserException;
 import bci.app.exception.NoSuchWorkException;
+import bci.app.exception.WorkNotBorrowedByUserException;
 import bci.core.Library;
 import bci.core.LibraryManager;
 import bci.core.exception.NoSuchUserWithIdException;
@@ -83,6 +84,8 @@ class DoRequestWork extends Command<LibraryManager> {
             } else {
                 throw new BorrowingRuleFailedException(userId, workId, e.getRuleId());
             }
+        } catch (IllegalArgumentException e) {
+            throw new WorkNotBorrowedByUserException(workId, userId);
         }
     }
 }

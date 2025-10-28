@@ -188,6 +188,40 @@ public class Library implements Serializable {
         return Collections.unmodifiableSet(_users);
     }
 
+    public Collection<User> getUsersWithEqOrMoreFines(int fine) {
+        return _users.stream()
+                .filter(u -> u.getTotalFines() >= fine)
+                .sorted(Comparator.comparing(User::getTotalFinesNegative))
+                .toList();
+    }
+
+    public User getUserWithHighestValue() throws IllegalArgumentException {
+        if (_activeRequests.isEmpty()) {
+            throw new IllegalArgumentException("Sem obras");
+        }
+
+        User highestValueUser = _activeRequests.values().stream().findFirst().get().getUser();
+        int currentHighestValue = highestValueUser.getTotalValueOfRequests();
+        int currentNameSize = highestValueUser.getName().length();
+
+        for (User user : _users) {
+            int value = user.getTotalValueOfRequests();
+            if (value > currentHighestValue) {
+                highestValueUser = user;
+                currentHighestValue = value;
+                currentNameSize = user.getName().length();
+                continue;
+            }
+
+            if (value == currentHighestValue && user.getName().length() <= currentNameSize) {
+                highestValueUser = user;
+                currentNameSize = user.getName().length();
+            }
+        }
+
+        return highestValueUser;
+    }
+
     /**
      * Pays the fine for a suspended user.
      *
@@ -348,7 +382,12 @@ public class Library implements Serializable {
      * @throws RequestRuleFailedException if any request rule fails.
      */
     public int requestWork(int userId, int workId)
-            throws NoSuchUserWithIdException, NoSuchWorkWithIdException, RequestRuleFailedException {
+            throws NoSuchUserWithIdException, NoSuchWorkWithIdException, RequestRuleFailedException, IllegalArgumentException {
+        if (_activeRequests.size() == 12) {
+            throw new IllegalArgumentException("Limite de requisições simultâneas da biblioteca atingido");
+        }
+
+
         User user = getUserById(userId);
         Work work = getWorkById(workId);
 
